@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --color-primary: #3490dc;
+    --color-secondary: #ffed4a;
+    --color-danger: #e3342f;
+}
+
+.theme-light {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --accent-color: var(--color-primary);
+    --button-bg: #f0f0f0;
+    --button-text: #333;
+    --button-hover: #333;
+    --button-hover-text: #fff;
+    --heading-color: #2d3748;
+    --border-color: #333;
+}
+
+.theme-dark {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --accent-color: var(--color-danger);
+    --button-bg: #1a1a1a;
+    --button-text: #fff;
+    --button-hover: #6a89cc;
+    --button-hover-text: #fff;
+    --heading-color: #e2e8f0;
+    --border-color: #6a89cc;
+}
+
+.theme-purple {
+    --bg-color: #1a1a1a;
+    --text-color: #bb86fc;
+    --accent-color: #00f;
+    --button-bg: #1a1a1a;
+    --button-text: #bb86fc;
+    --button-hover: #bb86fc;
+    --button-hover-text: #1a1a1a;
+    --heading-color: #bb86fc;
+    --border-color: #bb86fc;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.accent {
+    color: var(--accent-color);
+}
+
+.button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.button:hover {
+    background-color: var(--button-hover);
+    color: var(--button-hover-text);
+}
+
+.heading {
+    color: var(--heading-color);
+}
+
+.bordered {
+    border: 2px solid var(--border-color);
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -1px) rotate(-0.5deg);
+    }
+    20% {
+        transform: translate(-2px, 0px) rotate(0.5deg);
+    }
+    30% {
+        transform: translate(2px, 1px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(0.5deg);
+    }
+    50% {
+        transform: translate(-1px, 1px) rotate(-0.5deg);
+    }
+    60% {
+        transform: translate(-2px, 0.5px) rotate(0deg);
+    }
+    70% {
+        transform: translate(2px, 0.5px) rotate(-0.5deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(0.5deg);
+    }
+    90% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -1px) rotate(-0.5deg);
+    }
+}
+
+.shake {
+    animation: shake 0.5s;
+    animation-iteration-count: 1;
+}
