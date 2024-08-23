@@ -45,14 +45,14 @@ function Home() {
         } finally {
             setLoading(false);
         }
-    }, [difficulty, includeNumbers, includeSymbols]);
+    }, [difficulty, dispatch, includeNumbers, includeSymbols]);
 
     useEffect(() => {
         handleGenerateParagraph();
     }, [difficulty, includeSymbols, includeNumbers, handleGenerateParagraph]);
 
     return (
-        <div>
+        <div className="flex justify-center items-center h-full">
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (

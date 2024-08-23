@@ -58,7 +58,7 @@ const ThemeSelector: React.FC = () => {
                 {theme.charAt(0).toUpperCase() + theme.slice(1)} Theme
             </button>
             {isOpen && (
-                <div className="absolute right-0 z-10 w-full mt-2 origin-top-right rounded-md shadow-lg bg-[var(--bg-color)] ring-1 ring-black ring-opacity-5">
+                <div className="absolute bottom-full right-0 mb-2 z-10 w-full origin-bottom-right rounded-md shadow-lg bg-[var(--bg-color)] ring-1 ring-black ring-opacity-5">
                     <div className="py-1">
                         {themes.map((themeOption) => (
                             <button
