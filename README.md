@@ -1,3 +1,2 @@
 # typeconquer
-# demo
-https://typeconquer.vercel.app/
+[demo] https://typeconquer.vercel.app/
