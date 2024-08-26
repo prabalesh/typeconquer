@@ -9,6 +9,7 @@ function App() {
             <Layout>
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/auth"></Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Layout>
