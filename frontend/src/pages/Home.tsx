@@ -7,16 +7,9 @@ import { setParagraph } from "../features/typing/typingSlice";
 export type Difficulty = "easy" | "medium" | "hard";
 
 function Home() {
-    // const [paragraph, setParagraph] = useState<string[]>([]);
-
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-    // const [includeSymbols, setIncludeSymbols] = useState<boolean>(false);
-    // const [includeNumbers, setIncludeNumbers] = useState<boolean>(false);
-
-    // dispatch
     const dispatch = useDispatch<AppDispatch>();
     const { difficulty, includeSymbols, includeNumbers } = useSelector(
         (state: RootState) => state.typing
@@ -26,7 +19,9 @@ function Home() {
         try {
             setLoading(true);
             const res = await fetch(
-                `http://localhost:3000/?difficulty=${difficulty}&includeSymbols=${includeSymbols}&includeNumbers=${includeNumbers}`
+                `${
+                    import.meta.env.VITE_API_URL
+                }/api/generate-paragraph?difficulty=${difficulty}&includeSymbols=${includeSymbols}&includeNumbers=${includeNumbers}`
             );
             if (!res.ok) {
                 throw new Error("Failed to fetch paragraph");
@@ -58,16 +53,7 @@ function Home() {
             ) : error ? (
                 <p className="text-center text-red-500">Error: {error}</p>
             ) : (
-                <TypingTest
-                    // paragraph={paragraph}
-                    handleGenerateParagraph={handleGenerateParagraph}
-                    // difficulty={difficulty}
-                    // setDifficulty={setDifficulty}
-                    // includeSymbols={includeSymbols}
-                    // setIncludeSymbols={setIncludeSymbols}
-                    // includeNumbers={includeNumbers}
-                    // setIncludeNumbers={setIncludeNumbers}
-                />
+                <TypingTest handleGenerateParagraph={handleGenerateParagraph} />
             )}
         </div>
     );
