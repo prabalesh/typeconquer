@@ -11,30 +11,52 @@ function TypingDisplay({
     charIndex: number;
     isCharCorrectWrong: string[];
 }) {
-    const { paragraph } = useSelector((state: RootState) => state.typing);
-
-    const text = paragraph.join("");
-
+    const [isMobile, setIsMobile] = useState(false);
     const [lineLength, setLineLength] = useState(60);
 
     useEffect(() => {
-        function updateLineLength() {
-            const container = document.getElementById("typing-display");
-            if (container) {
-                const containerWidth = container.clientWidth;
-                const charWidth = 16; // Adjust this value if necessary
-                const newLineLength = Math.floor(containerWidth / charWidth);
-                setLineLength(newLineLength);
-            }
+        function checkIfMobile() {
+            // Check for mobile device using user agent or window width
+            const userAgent = navigator.userAgent || navigator.vendor;
+            const isMobileDevice =
+                /android|iPad|iPhone|iPod/.test(userAgent) ||
+                window.innerWidth <= 800;
+            setIsMobile(isMobileDevice);
         }
 
-        updateLineLength();
-        window.addEventListener("resize", updateLineLength);
+        checkIfMobile(); // Initial check
+        window.addEventListener("resize", checkIfMobile);
 
         return () => {
-            window.removeEventListener("resize", updateLineLength);
+            window.removeEventListener("resize", checkIfMobile);
         };
     }, []);
+
+    useEffect(() => {
+        if (!isMobile) {
+            function updateLineLength() {
+                const container = document.getElementById("typing-display");
+                if (container) {
+                    const containerWidth = container.clientWidth;
+                    const charWidth = 16; // Adjust this value if necessary
+                    const newLineLength = Math.floor(
+                        containerWidth / charWidth
+                    );
+                    setLineLength(newLineLength);
+                }
+            }
+
+            updateLineLength();
+            window.addEventListener("resize", updateLineLength);
+
+            return () => {
+                window.removeEventListener("resize", updateLineLength);
+            };
+        }
+    }, [isMobile]);
+
+    const { paragraph } = useSelector((state: RootState) => state.typing);
+    const text = paragraph.join("");
 
     const words = text.split(" ");
 
@@ -74,16 +96,21 @@ function TypingDisplay({
     }
 
     const startLineIndex = Math.max(0, currentLineIndex - 1);
-
     const visibleLines = lines.slice(
         startLineIndex,
-        startLineIndex + 3 // Display a fixed number of lines, adjust as needed
+        startLineIndex + 3 // Display a fixed number of lines
     );
 
     return (
         <div
             id="typing-display"
-            className="tracking-widest leading-7 text-gray-600 overflow-hidden"
+            className="tracking-widest leading-7 text-gray-600"
+            style={{
+                width: isMobile ? "100%" : "auto", // Adjust width based on mobile
+                maxHeight: isMobile ? "calc(100vh - 80px)" : "auto", // Adjust height based on mobile
+                overflow: isMobile ? "auto" : "hidden", // Prevent scrollbars if not mobile
+                padding: isMobile ? "10px" : "0", // Add padding on mobile for better appearance
+            }}
         >
             {visibleLines.map((line, lno) => {
                 const lineStartIndex = lines
@@ -93,7 +120,7 @@ function TypingDisplay({
                 return (
                     <div
                         key={lno}
-                        className="flex justify-between"
+                        className={`flex ${!isMobile && "justify-between"}`}
                         style={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                     >
                         {line.split("").map((char, i) => {

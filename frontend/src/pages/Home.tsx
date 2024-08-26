@@ -51,7 +51,16 @@ function Home() {
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
-                <p className="text-center text-red-500">Error: {error}</p>
+                <div className="text-center">
+                    <p className="text-red-500">Error: {error}</p>
+
+                    <button
+                        onClick={handleGenerateParagraph}
+                        className="mt-8 py-2 px-4 sm:py-2 sm:px-6 border shadow-md rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
+                    >
+                        Try again
+                    </button>
+                </div>
             ) : (
                 <TypingTest handleGenerateParagraph={handleGenerateParagraph} />
             )}
