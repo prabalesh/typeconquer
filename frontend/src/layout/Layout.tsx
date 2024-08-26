@@ -6,7 +6,12 @@ function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Header />
-            <main style={{ height: "80vh" }}>{children}</main>
+            <main
+                className="flex flex-col items-center justify-center"
+                style={{ height: "80vh" }}
+            >
+                {children}
+            </main>
             <Footer />
         </>
     );

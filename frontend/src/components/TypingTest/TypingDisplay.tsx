@@ -15,8 +15,6 @@ function TypingDisplay({
 
     const text = paragraph.join("");
 
-    const totalLines = 3;
-
     const [lineLength, setLineLength] = useState(60);
 
     useEffect(() => {
@@ -24,7 +22,7 @@ function TypingDisplay({
             const container = document.getElementById("typing-display");
             if (container) {
                 const containerWidth = container.clientWidth;
-                const charWidth = 18;
+                const charWidth = 16; // Adjust this value if necessary
                 const newLineLength = Math.floor(containerWidth / charWidth);
                 setLineLength(newLineLength);
             }
@@ -79,13 +77,13 @@ function TypingDisplay({
 
     const visibleLines = lines.slice(
         startLineIndex,
-        startLineIndex + totalLines
+        startLineIndex + 3 // Display a fixed number of lines, adjust as needed
     );
 
     return (
         <div
             id="typing-display"
-            className="tracking-widest leading-10 text-gray-500 overflow-auto h-48"
+            className="tracking-widest leading-7 text-gray-600 overflow-hidden"
         >
             {visibleLines.map((line, lno) => {
                 const lineStartIndex = lines
@@ -110,7 +108,7 @@ function TypingDisplay({
                                             ] = ele;
                                         }
                                     }}
-                                    className={`text-3xl ${
+                                    className={`text-sm sm:text-base md:text-2xl between-md-lg:text-lg lg:text-3xl ${
                                         isCharCorrectWrong[currentCharPosition]
                                     } ${
                                         charIndex === currentCharPosition

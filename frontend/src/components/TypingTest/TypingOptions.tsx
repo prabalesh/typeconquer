@@ -17,7 +17,7 @@ const TypingOptions: React.FC<TypingOptionsProps> = ({ setTimeLimit }) => {
         useSelector((state: RootState) => state.typing);
     return (
         <div className="flex flex-col gap-4 items-center mt-8">
-            <div className="flex gap-4 text-gray-500">
+            <div className="flex flex-wrap gap-4 text-gray-500">
                 <button
                     onClick={() => setTimeLimit(90)}
                     className={`${
@@ -51,7 +51,7 @@ const TypingOptions: React.FC<TypingOptionsProps> = ({ setTimeLimit }) => {
                     15
                 </button>
             </div>
-            <div className="flex gap-4 text-gray-500">
+            <div className="flex flex-wrap gap-4 text-gray-500">
                 <button
                     onClick={() =>
                         difficulty != "easy" && dispatch(setDifficulty("easy"))
@@ -86,7 +86,7 @@ const TypingOptions: React.FC<TypingOptionsProps> = ({ setTimeLimit }) => {
                     hard
                 </button>
             </div>
-            <div className="flex gap-4 text-gray-500">
+            <div className="flex flex-wrap gap-4 text-gray-500">
                 <button
                     onClick={() => dispatch(setIncludeNumbers(!includeNumbers))}
                     className={`${

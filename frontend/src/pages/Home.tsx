@@ -47,7 +47,7 @@ function Home() {
     }, [difficulty, includeSymbols, includeNumbers, handleGenerateParagraph]);
 
     return (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center h-full px-4 sm:px-6 md:px-8">
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (

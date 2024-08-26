@@ -100,7 +100,7 @@ export default function TypingTest({
     }, [timeLimit]);
 
     return (
-        <div className="max-w-7xl mx-auto p-4 text-footer-text">
+        <div className="max-w-7xl mx-auto p-4 text-footer-text flex flex-col items-center">
             <TypingInput
                 handleInputChange={handleInputChange}
                 inputRef={inputRef}
@@ -126,7 +126,7 @@ export default function TypingTest({
             />
             {timesUp && (
                 <div className="mt-5 text-center">
-                    <p className="text-2xl text-red-500">Time's Up</p>
+                    <p className="ext-xl sm:text-2xl text-red-500">Time's Up</p>
                 </div>
             )}
         </div>
