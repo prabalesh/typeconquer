@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import typingReducer from "../features/typing/typingSlice";
+import userReducer from "../features/user/userSlice";
 
 const store = configureStore({
     reducer: {
+        user: userReducer,
         typing: typingReducer,
     },
 });
