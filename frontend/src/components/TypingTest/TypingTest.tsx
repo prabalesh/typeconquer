@@ -116,7 +116,7 @@ export default function TypingTest({
                             <p className="text-2xl sm:text-3xl font-semibold">
                                 Time's Up
                             </p>
-                            <div className="text-lg text-gray-700 dark:text-gray-300">
+                            <div className="text-lg text-gray-500">
                                 <p className="text-xl font-medium">
                                     Mistakes: <span>{mistakes}</span>
                                 </p>
