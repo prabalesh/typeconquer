@@ -11,9 +11,12 @@ const useTypingState = () => {
                 const newState = [...prevState];
                 if (
                     newState[prevCharIndex - 1] == "text-red-500" ||
-                    newState[prevCharIndex - 1] == "bg-red-600"
+                    newState[prevCharIndex - 1] == "bg-red-500"
                 ) {
-                    setMistakes((prevMistakes) => prevMistakes - 1);
+                    console.log("mistake gone");
+                    setMistakes((prevMistakes) =>
+                        prevMistakes - 1 < 0 ? 0 : prevMistakes - 1
+                    );
                 }
                 newState[prevCharIndex - 1] = "";
                 return newState;
@@ -30,7 +33,8 @@ const useTypingState = () => {
                 return newState;
             });
         } else {
-            setMistakes(mistakes + 1);
+            console.log("mistake");
+            setMistakes((prevMistakes) => prevMistakes + 1);
             setIsCharCorrectWrong((prevState) => {
                 const newState = [...prevState];
                 newState[charIndex] =

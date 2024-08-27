@@ -13,7 +13,9 @@ export default function TypingStats({
         <div className="mt-8 flex flex-col font-bold text-[var(--text-color)]">
             <div className="flex lg:flex-row gap-8 lg:text-xl sm:text-sm justify-center">
                 <p className="text-center">
-                    <span>{timeLeft}</span> s
+                    <span className={`${timeLeft < 5 && "text-red-500"}`}>
+                        {timeLeft}s
+                    </span>{" "}
                 </p>
                 <p className="text-center">
                     <span>{wpm}</span> WPM

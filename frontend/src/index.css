@@ -78,6 +78,9 @@ body {
 .bordered-1 {
     border: 1px solid var(--border-color);
 }
+.border-bottom {
+    border-bottom: 2px solid var(--border-color);
+}
 
 @keyframes shake {
     0% {

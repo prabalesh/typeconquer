@@ -58,7 +58,7 @@ const Header: React.FC = () => {
                                 <p className="text-sm truncate">{user.email}</p>
                                 <button
                                     onClick={handleLogout}
-                                    className="mt-4 w-full bg-red-500 text-white py-2 rounded bordered button transition-all"
+                                    className="mt-4 w-full bg-red-500 text-[-var(--text-color)] py-2 rounded bordered button transition-all"
                                 >
                                     Logout
                                 </button>
@@ -69,13 +69,13 @@ const Header: React.FC = () => {
                     <>
                         <Link
                             to={"/auth/login"}
-                            className="bg-[var(--primary-color)] text-white text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 hover:text-[var(--text-color)] transition-all"
+                            className="bg-[var(--primary-color)] text-[-var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"
                         >
                             Login
                         </Link>
                         <Link
                             to={"/auth/register"}
-                            className="bg-[var(--secondary-color)] text-white text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 hover:text-[var(--text-color)] transition-all"
+                            className="bg-[var(--secondary-color)] text-[-var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"
                         >
                             Register
                         </Link>

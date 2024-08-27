@@ -100,19 +100,50 @@ export default function TypingTest({
     }, [timeLimit]);
 
     return (
-        <div className="max-w-7xl mx-auto p-4 text-footer-text flex flex-col items-center">
+        <div
+            className={`max-w-7xl mx-auto p-4 text-footer-text flex flex-col items-center ${
+                timesUp && "shake"
+            }`}
+        >
             <TypingInput
                 handleInputChange={handleInputChange}
                 inputRef={inputRef}
             />
             {paragraph.length > 0 && (
-                <TypingDisplay
-                    charRefs={charRefs}
-                    charIndex={charIndex}
-                    isCharCorrectWrong={isCharCorrectWrong}
-                    inputRef={inputRef}
-                />
+                <>
+                    {timesUp ? (
+                        <div className="mt-5 text-center pb-4 space-y-4 border-bottom w-full">
+                            <p className="text-2xl sm:text-3xl font-semibold">
+                                Time's Up
+                            </p>
+                            <div className="text-lg text-gray-700 dark:text-gray-300">
+                                <p className="text-xl font-medium">
+                                    Mistakes: <span>{mistakes}</span>
+                                </p>
+                                <p className="text-xl font-medium">
+                                    Accuracy:{" "}
+                                    <span>
+                                        {(
+                                            ((charIndex + 1 - mistakes) /
+                                                (charIndex + 1)) *
+                                            100
+                                        ).toFixed(2)}
+                                        %
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <TypingDisplay
+                            charRefs={charRefs}
+                            charIndex={charIndex}
+                            isCharCorrectWrong={isCharCorrectWrong}
+                            inputRef={inputRef}
+                        />
+                    )}
+                </>
             )}
+
             <TypingStats
                 timeLeft={timeLeft}
                 wpm={wpm}
@@ -125,11 +156,6 @@ export default function TypingTest({
                     setResetGameFlag(true);
                 }}
             />
-            {timesUp && (
-                <div className="mt-5 text-center">
-                    <p className="ext-xl sm:text-2xl text-red-500">Time's Up</p>
-                </div>
-            )}
         </div>
     );
 }
