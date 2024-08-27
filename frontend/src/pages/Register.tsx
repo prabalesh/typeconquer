@@ -40,12 +40,12 @@ const Register: React.FC = () => {
                 throw new Error("Failed to login!");
             }
             const data = await res.json();
-            if (data.success && data.token) {
+            if (data.success && data["accessToken"]) {
                 const decodedUserData = await jwtDecode<{
                     id: string;
                     email: string;
                     name: string;
-                }>(data["token"]);
+                }>(data["accessToken"]);
                 dispatch(
                     setUser({
                         id: decodedUserData["id"],

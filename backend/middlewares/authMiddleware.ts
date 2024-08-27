@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { VerifyErrors } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { config } from "../config/config";
+import User from "../auth/UserModel";
 
 interface UserPayload {
     id: string;
@@ -12,29 +13,85 @@ interface AuthenticatedRequest extends Request {
     user?: UserPayload;
 }
 
-const authenticateToken = (
+const authenticateToken = async (
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
 ) => {
-    const token = req.cookies["authToken"];
-    if (!token) return res.sendStatus(401);
+    // Extract tokens from cookies
+    const accessToken = req.cookies["accessToken"];
+    const refreshToken = req.cookies["refreshToken"];
 
-    jwt.verify(
-        token,
-        config.JWT_SECRET,
-        (err: VerifyErrors | null, decoded: unknown) => {
-            if (err) {
-                return res.sendStatus(403);
+    if (accessToken) {
+        try {
+            const decoded = jwt.verify(accessToken, config.JWT_SECRET);
+            req.user = decoded as UserPayload;
+            return next();
+        } catch (err) {
+            if (err instanceof jwt.TokenExpiredError && refreshToken) {
+                try {
+                    const decodedRefreshToken = jwt.verify(
+                        refreshToken,
+                        config.JWT_SECRET
+                    );
+                    if (
+                        typeof decodedRefreshToken === "object" &&
+                        "id" in decodedRefreshToken
+                    ) {
+                        const user = await User.findById(
+                            decodedRefreshToken.id
+                        );
+                        if (!user) {
+                            return res.status(403).json({
+                                success: false,
+                                message: "Invalid refresh token",
+                            });
+                        }
+
+                        const newAccessToken = jwt.sign(
+                            {
+                                id: user._id,
+                                name: user.name,
+                                email: user.email,
+                            },
+                            config.JWT_SECRET,
+                            { expiresIn: "15min" }
+                        );
+
+                        res.cookie("accessToken", newAccessToken, {
+                            httpOnly: true,
+                            secure: config.NODE_ENV === "production",
+                            sameSite:
+                                config.NODE_ENV === "production"
+                                    ? "lax"
+                                    : "none",
+                            expires: new Date(Date.now() + 15 * 60 * 1000),
+                        });
+
+                        req.user = {
+                            id: user._id.toString(),
+                            name: user.name,
+                            email: user.email,
+                        };
+                        return next();
+                    } else {
+                        throw new Error("Token expired!");
+                    }
+                } catch {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Token expired!",
+                    });
+                }
             }
-
-            if (decoded) {
-                req.user = decoded as UserPayload;
-            }
-
-            next();
+            return res
+                .status(403)
+                .json({ success: false, message: "Invalid access token" });
         }
-    );
+    }
+    return res
+        .status(401)
+        .json({ success: false, message: "Login in to continue" });
 };
 
 export default authenticateToken;

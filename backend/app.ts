@@ -4,6 +4,7 @@ import cors from "cors";
 import homeRoutes from "./home/homeRoutes";
 import authRoutes from "./auth/authRoutes";
 import cookieParser from "cookie-parser";
+import { config } from "./config/config";
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(
         origin: [
             "http://localhost",
             "http://localhost:5173",
-            "http://192.168.18.85:5173",
+            config.FRONTEND_URL,
         ],
         credentials: true,
     })
