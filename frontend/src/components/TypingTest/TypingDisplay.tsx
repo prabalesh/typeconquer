@@ -6,10 +6,12 @@ function TypingDisplay({
     charRefs,
     charIndex,
     isCharCorrectWrong,
+    inputRef,
 }: {
     charRefs: React.RefObject<(HTMLSpanElement | null)[]>;
     charIndex: number;
     isCharCorrectWrong: string[];
+    inputRef: React.RefObject<HTMLInputElement>;
 }) {
     const [isMobile, setIsMobile] = useState(false);
     const [lineLength, setLineLength] = useState(60);
@@ -111,6 +113,7 @@ function TypingDisplay({
                 overflow: isMobile ? "auto" : "hidden", // Prevent scrollbars if not mobile
                 padding: isMobile ? "10px" : "0", // Add padding on mobile for better appearance
             }}
+            onClick={() => inputRef.current?.focus()}
         >
             {visibleLines.map((line, lno) => {
                 const lineStartIndex = lines

@@ -25,6 +25,29 @@ const authenticateToken = async (
     if (accessToken) {
         try {
             const decoded = jwt.verify(accessToken, config.JWT_SECRET);
+
+            if (typeof decoded === "object" && "id" in decoded) {
+                const user = await User.findById(decoded["id"]);
+                if (!user) {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Invalid refresh token",
+                    });
+                }
+
+                req.user = {
+                    id: user._id.toString(),
+                    name: user.name,
+                    email: user.email,
+                };
+                user.lastLogin = new Date();
+
+                await user.save();
+            } else {
+                return res
+                    .status(403)
+                    .json({ success: false, message: "Invalid access token" });
+            }
             req.user = decoded as UserPayload;
             return next();
         } catch (err) {
@@ -57,14 +80,13 @@ const authenticateToken = async (
                             config.JWT_SECRET,
                             { expiresIn: "15min" }
                         );
+                        user.lastLogin = new Date();
+                        await user.save();
 
                         res.cookie("accessToken", newAccessToken, {
                             httpOnly: true,
                             secure: config.NODE_ENV === "production",
-                            sameSite:
-                                config.NODE_ENV === "production"
-                                    ? "lax"
-                                    : "none",
+                            sameSite: "none",
                             expires: new Date(Date.now() + 15 * 60 * 1000),
                         });
 

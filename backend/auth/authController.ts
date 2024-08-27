@@ -72,8 +72,12 @@ export const googleAuthLogin = async (
         const { email, name, sub: googleID } = payload;
 
         let user = await User.findOne({ email });
+
         if (!user) {
             user = await User.create({ name, email, googleID });
+        } else {
+            user.lastLogin = new Date();
+            await user.save();
         }
 
         const accessToken = jwt.sign(
@@ -97,14 +101,14 @@ export const googleAuthLogin = async (
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
-            sameSite: config.NODE_ENV === "production" ? "lax" : "none",
+            sameSite: "none",
             expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
         });
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
-            sameSite: config.NODE_ENV === "production" ? "lax" : "none",
+            sameSite: "none",
             expires: new Date(Date.now() + 30 * 24 * 3600000), // 30 days
         });
 
@@ -160,7 +164,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: config.NODE_ENV === "production",
-            sameSite: config.NODE_ENV === "production" ? "lax" : "none",
+            sameSite: "none",
             expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
         });
 
@@ -177,14 +181,14 @@ export const logout = (req: Request, res: Response) => {
     res.cookie("accessToken", "", {
         httpOnly: true,
         secure: config.NODE_ENV === "production",
-        sameSite: config.NODE_ENV === "production" ? "lax" : "none",
+        sameSite: "none",
         expires: new Date(0),
     });
 
     res.cookie("refreshToken", "", {
         httpOnly: true,
         secure: config.NODE_ENV === "production",
-        sameSite: config.NODE_ENV === "production" ? "lax" : "none",
+        sameSite: "none",
         expires: new Date(0),
     });
 

@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
             required: [true, "googeID is required"],
             unique: true,
         },
+        lastLogin: {
+            type: Date,
+            default: new Date(),
+        },
     },
     { timestamps: true }
 );

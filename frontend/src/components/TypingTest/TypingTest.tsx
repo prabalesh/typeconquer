@@ -110,6 +110,7 @@ export default function TypingTest({
                     charRefs={charRefs}
                     charIndex={charIndex}
                     isCharCorrectWrong={isCharCorrectWrong}
+                    inputRef={inputRef}
                 />
             )}
             <TypingStats
