@@ -7,6 +7,7 @@ const _config = {
     MONGO_CONN_STRING: process.env.MONGO_CONN_STRING as string,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
     JWT_SECRET: process.env.JWT_SECRET as string,
+    NODE_ENV: process.env.NODE_ENV as string,
 };
 
 export const config = Object.freeze(_config);
