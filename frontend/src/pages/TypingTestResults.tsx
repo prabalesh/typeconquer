@@ -203,6 +203,10 @@ function TypingTestResults() {
                                                             Accuracy:{" "}
                                                             {result.accuracy}%
                                                         </p>
+                                                        <p>
+                                                            Duration:{" "}
+                                                            {result.duration}s
+                                                        </p>
                                                     </div>
                                                 )
                                             )}
