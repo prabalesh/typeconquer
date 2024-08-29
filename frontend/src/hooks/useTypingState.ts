@@ -5,19 +5,22 @@ import { useDispatch } from "react-redux";
 import { setParagraph } from "../features/typing/typingSlice";
 
 const useTypingState = () => {
-    const [charIndex, setCharIndex] = useState<number>(0);
-    const [isCharCorrectWrong, setIsCharCorrectWrong] = useState<string[]>([]);
-    const [mistakes, setMistakes] = useState<number>(0);
-
-    const [maxCharIndex, setMaxCharIndex] = useState<number>(0);
-    const [errorPoints, setErrorPoints] = useState<Set<number>>(new Set());
-
     const { paragraph, difficulty, includeSymbols, includeNumbers } =
         useSelector((state: RootState) => state.typing);
+
     const dispatch = useDispatch();
 
+    const [charIndex, setCharIndex] = useState<number>(0);
+    const [maxCharIndex, setMaxCharIndex] = useState<number>(0);
+
+    const [mistakes, setMistakes] = useState<number>(0);
     const [highMistakeAlert, setHighMistakeAlert] = useState<boolean>(false);
 
+    const [isCharCorrectWrong, setIsCharCorrectWrong] = useState<string[]>([]);
+
+    const [errorPoints, setErrorPoints] = useState<Set<number>>(new Set());
+
+    // dynamic paragraph expansion
     const expandParagraph = useCallback(async () => {
         if (paragraph.length >= charIndex + 80) return;
 
@@ -32,9 +35,9 @@ const useTypingState = () => {
 
         const data = await res.json();
         if (typeof data === "object" && "words" in data) {
-            const words: string[] = data.words as string[]; // Ensure it's typed as string[]
-            const newParagraph = [...paragraph, ...words]; // Concatenate previous state with new words
-            dispatch(setParagraph(newParagraph)); // Dispatch the final paragraph array
+            const words: string[] = data.words as string[];
+            const newParagraph = [...paragraph, ...words];
+            dispatch(setParagraph(newParagraph));
         }
     }, [
         charIndex,
@@ -44,6 +47,12 @@ const useTypingState = () => {
         includeSymbols,
         paragraph,
     ]);
+
+    const checkHighMistakes = useCallback(() => {
+        if (charIndex > 120 && mistakes > charIndex * 0.6) {
+            setHighMistakeAlert(true);
+        }
+    }, [charIndex, mistakes]);
 
     useEffect(() => {
         let isMounted = true;
@@ -61,18 +70,13 @@ const useTypingState = () => {
         };
     }, [charIndex, expandParagraph]);
 
-    const checkHighMistakes = useCallback(() => {
-        if (charIndex > 120 && mistakes > charIndex * 0.6) {
-            setHighMistakeAlert(true);
-        }
-    }, [charIndex, mistakes]);
-
     useEffect(() => {
         if (!highMistakeAlert) {
             checkHighMistakes();
         }
     }, [mistakes, highMistakeAlert, checkHighMistakes]);
 
+    // handling backspace
     const handleBackSpace = () => {
         setCharIndex((prevCharIndex) => {
             setIsCharCorrectWrong((prevState) => {
@@ -93,6 +97,7 @@ const useTypingState = () => {
         });
     };
 
+    // validating input
     const handleCharInput = (typedChar: string, currentChar: string) => {
         if (typedChar == currentChar) {
             setIsCharCorrectWrong((prevState) => {
@@ -122,7 +127,7 @@ const useTypingState = () => {
         });
     };
 
-    return [
+    return {
         charIndex,
         mistakes,
         isCharCorrectWrong,
@@ -131,7 +136,7 @@ const useTypingState = () => {
         maxCharIndex,
         errorPoints,
         highMistakeAlert,
-    ] as const;
+    };
 };
 
 export default useTypingState;

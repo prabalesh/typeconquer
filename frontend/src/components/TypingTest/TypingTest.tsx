@@ -39,7 +39,7 @@ export default function TypingTest({
 
     const [modalOpen, setModalOpen] = useState(true); // for congrats modal
 
-    const [
+    const {
         charIndex,
         mistakes,
         isCharCorrectWrong,
@@ -48,7 +48,7 @@ export default function TypingTest({
         maxCharIndex,
         errorPoints,
         highMistakeAlert,
-    ] = useTypingState();
+    } = useTypingState();
 
     const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] =
         useTimer(isTyping);
@@ -124,7 +124,6 @@ export default function TypingTest({
             );
         });
 
-        // Update state with the filtered words
         setPracticeWords(filteredWords);
     }, [errorPoints, maxCharIndex, paragraph]);
 
