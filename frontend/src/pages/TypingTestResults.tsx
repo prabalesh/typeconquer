@@ -5,29 +5,14 @@ import { useCallback, useEffect, useState } from "react";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import TestResultsItem from "../components/TypingTestResults/TestResultsItem";
 
-interface TestResultType {
-    _id: string;
-    userID: string;
-    accuracy: number;
-    wpm: number;
-    duration: number;
-    testDate: Date;
-    errorPoints: number[];
-    text: string;
-}
-
-interface BestWpmResult {
-    _id: string;
-    userID: string;
-    bestWPM: number;
-    testResultID: string;
-}
+import { TestResultType, BestWpmResultType } from "../types/TypingResultsTypes";
 
 function TypingTestResults() {
     const user = useSelector((state: RootState) => state.user);
 
-    const pageLimit = 20;
+    const pageLimit = 10;
     const [pageNum, setPageNum] = useState<number>(1);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -35,9 +20,8 @@ function TypingTestResults() {
     const [errors, setErrors] = useState<string | null>(null);
 
     const [testResults, setResults] = useState<TestResultType[]>([]);
-    const [bestWpmResult, setBestWpmResult] = useState<BestWpmResult | null>(
-        null
-    );
+    const [bestWpmResult, setBestWpmResult] =
+        useState<BestWpmResultType | null>(null);
     const [hasMoreResults, setHasMoreResults] = useState<boolean>(true); // To track if there are more results
 
     const fetchResults = useCallback(async () => {
@@ -153,61 +137,13 @@ function TypingTestResults() {
                                         <>
                                             {testResults.map(
                                                 (result, index) => (
-                                                    <div
+                                                    <TestResultsItem
                                                         key={index}
-                                                        className={`p-4 ${
-                                                            bestWpmResult &&
-                                                            bestWpmResult.testResultID ===
-                                                                result._id.toString()
-                                                                ? "animated-border"
-                                                                : "bordered"
-                                                        } rounded-2xl`}
-                                                    >
-                                                        <p className="text-sm md:text-base">
-                                                            {result.text
-                                                                .split("")
-                                                                .map(
-                                                                    (
-                                                                        char,
-                                                                        charIndex
-                                                                    ) => (
-                                                                        <span
-                                                                            key={
-                                                                                charIndex
-                                                                            }
-                                                                            className={`${
-                                                                                result.errorPoints.includes(
-                                                                                    charIndex
-                                                                                )
-                                                                                    ? "text-red-600"
-                                                                                    : ""
-                                                                            }`}
-                                                                        >
-                                                                            {
-                                                                                char
-                                                                            }
-                                                                        </span>
-                                                                    )
-                                                                )}
-                                                        </p>
-                                                        <p>
-                                                            Mistakes:{" "}
-                                                            {
-                                                                result
-                                                                    .errorPoints
-                                                                    .length
-                                                            }
-                                                        </p>
-                                                        <p>WPM: {result.wpm}</p>
-                                                        <p>
-                                                            Accuracy:{" "}
-                                                            {result.accuracy}%
-                                                        </p>
-                                                        <p>
-                                                            Duration:{" "}
-                                                            {result.duration}s
-                                                        </p>
-                                                    </div>
+                                                        bestWpmResult={
+                                                            bestWpmResult
+                                                        }
+                                                        result={result}
+                                                    />
                                                 )
                                             )}
                                         </>

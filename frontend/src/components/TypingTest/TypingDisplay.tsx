@@ -120,7 +120,7 @@ function TypingDisplay({
     return (
         <div
             id="typing-display"
-            className="tracking-widest leading-7 text-gray-600"
+            className="tracking-widest text-gray-600"
             style={{
                 width: isMobile ? "100%" : "auto", // Adjust width based on mobile
                 maxHeight: isMobile ? "calc(100vh - 80px)" : "auto", // Adjust height based on mobile
@@ -145,7 +145,7 @@ function TypingDisplay({
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M4 6h16M4 12h16M4 18h16"
                             />
                         </svg>
@@ -165,7 +165,7 @@ function TypingDisplay({
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M4 6h16M6 12h12M4 18h16"
                             />
                         </svg>
@@ -185,12 +185,12 @@ function TypingDisplay({
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M4 6h16M4 12h16M4 18h16"
                             />
                             <path
                                 stroke="currentColor"
-                                stroke-width="2"
+                                strokeWidth="2"
                                 d="M4 6v12M20 6v12"
                             />
                         </svg>
@@ -225,7 +225,7 @@ function TypingDisplay({
                                         isCharCorrectWrong[currentCharPosition]
                                     } ${
                                         charIndex === currentCharPosition
-                                            ? "border-b-4 border-[var(--accent-color)]"
+                                            ? "border-b-2 border-[var(--accent-color)]"
                                             : ""
                                     }`}
                                     style={{ whiteSpace: "pre" }}

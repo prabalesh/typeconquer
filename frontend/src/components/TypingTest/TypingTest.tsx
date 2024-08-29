@@ -11,39 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
 import { setTimeLimit } from "../../features/typing/typingSlice";
 import LowAccurarcyWarning from "./LowAccuracuWarning";
-import { Link } from "react-router-dom";
-
-const CongratsModal = ({
-    isOpen,
-    onClose,
-    wpm,
-    prevBestWpm,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-    wpm: number;
-    prevBestWpm: number;
-}) => {
-    if (!isOpen) return null;
-
-    return (
-        <div className="fixed inset-0 flex items-center justify-center bg-opacity- z-50">
-            <div className="p-8 rounded-lg shadow-lg text-center animated-border shake bg-[var(--bg-color)]">
-                <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
-                <p className="text-lg">
-                    You've achieved the best WPM of {wpm}!
-                </p>
-                <p>Previous best: {prevBestWpm} wpm</p>
-                <button
-                    className="my-4 py-2 px-4 sm:py-2 sm:px-6 border shadow-md rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
-                    onClick={onClose}
-                >
-                    Close
-                </button>
-            </div>
-        </div>
-    );
-};
+import CongratsModal from "../CongratsModal";
+import TypingTestSummary from "./TypingTestSummary";
 
 export default function TypingTest({
     handleGenerateParagraph,
@@ -63,6 +32,12 @@ export default function TypingTest({
     const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
     const [startTime, setStartTime] = useState<number | null>(null);
+
+    const [practiceWords, setPracticeWords] = useState<string[]>([]);
+
+    const [bestWpm, setBestWpm] = useState<number>(0);
+
+    const [modalOpen, setModalOpen] = useState(true); // for congrats modal
 
     const [
         charIndex,
@@ -129,27 +104,13 @@ export default function TypingTest({
         resetGameFlag,
     ]);
 
-    useEffect(() => {
-        resetGame();
-        setResetGameFlag(false);
-    }, [timeLimit, resetGame, resetGameFlag]);
-
-    useEffect(() => {
-        localStorage.setItem("ctime", timeLimit.toString());
-    }, [timeLimit]);
-
-    const [practiceWords, setPracticeWords] = useState<string[]>([]);
-
     const findPracticeWords = useCallback(() => {
         const content = paragraph.slice(0, maxCharIndex + 1).join("");
         const points = [...errorPoints];
 
-        // Split the content into words
         const words = content.split(" ");
 
-        // Filter words based on error points
         const filteredWords = words.filter((word, wordIndex) => {
-            // Calculate the start index of the current word
             const startIdx = content.indexOf(
                 word,
                 wordIndex === 0
@@ -158,8 +119,6 @@ export default function TypingTest({
                           words[wordIndex - 1].length +
                           1
             );
-
-            // Check if any error point falls within the word's range
             return points.some(
                 (point) => point >= startIdx && point < startIdx + word.length
             );
@@ -168,6 +127,28 @@ export default function TypingTest({
         // Update state with the filtered words
         setPracticeWords(filteredWords);
     }, [errorPoints, maxCharIndex, paragraph]);
+
+    const fetchBestResult = useCallback(async () => {
+        console.log("working");
+        const apiURL = `${
+            import.meta.env.VITE_API_URL
+        }/api/typingtests/bestresult`;
+        const res = await fetch(apiURL, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            if (typeof data === "object" && "bestWPM" in data) {
+                if (typeof data["bestWPM"] === "number") {
+                    setBestWpm(data["bestWPM"]);
+                }
+            }
+        } else {
+            console.log("error");
+        }
+    }, []);
 
     const submitResult = useCallback(async () => {
         if (!user.id) return;
@@ -208,69 +189,26 @@ export default function TypingTest({
     ]);
 
     useEffect(() => {
+        resetGame();
+        setResetGameFlag(false);
+    }, [timeLimit, resetGame, resetGameFlag]);
+
+    useEffect(() => {
+        localStorage.setItem("ctime", timeLimit.toString());
+    }, [timeLimit]);
+
+    useEffect(() => {
         if (timesUp) {
             submitResult();
             findPracticeWords();
         }
     }, [timesUp, findPracticeWords, submitResult]);
 
-    const [bestWpm, setBestWpm] = useState<number>(0);
-
-    const fetchBestResult = useCallback(async () => {
-        console.log("working");
-        const apiURL = `${
-            import.meta.env.VITE_API_URL
-        }/api/typingtests/bestresult`;
-        const res = await fetch(apiURL, {
-            method: "GET",
-            credentials: "include",
-        });
-
-        if (res.ok) {
-            const data = await res.json();
-            if (typeof data === "object" && "bestWPM" in data) {
-                if (typeof data["bestWPM"] === "number") {
-                    setBestWpm(data["bestWPM"]);
-                }
-            }
-        } else {
-            console.log("error");
-        }
-    }, []);
-
     useEffect(() => {
         if (isTyping && user.id) {
             fetchBestResult();
         }
     }, [fetchBestResult, isTyping, user.id]);
-
-    const createConfetti = () => {
-        const confettiContainer = document.createElement("div");
-        confettiContainer.classList.add("confetti");
-        document.body.appendChild(confettiContainer);
-
-        const colors = ["#FF5733", "#33FF57", "#3357FF", "#F0F0F0"];
-
-        for (let i = 0; i < 100; i++) {
-            const confettiPiece = document.createElement("div");
-            confettiPiece.classList.add("confetti-piece");
-            confettiPiece.style.backgroundColor =
-                colors[Math.floor(Math.random() * colors.length)];
-            confettiPiece.style.width = `${Math.random() * 10 + 5}px`;
-            confettiPiece.style.height = `${Math.random() * 10 + 5}px`;
-            confettiPiece.style.top = `${Math.random() * 100}vh`;
-            confettiPiece.style.left = `${Math.random() * 100}vw`;
-            confettiPiece.style.animationDuration = `${Math.random() * 2 + 3}s`;
-            confettiContainer.appendChild(confettiPiece);
-        }
-
-        // Remove confetti container after animation
-        setTimeout(() => {
-            confettiContainer.remove();
-        }, 5000);
-    };
-
-    const [modalOpen, setModalOpen] = useState(true);
 
     useEffect(() => {
         if (highMistakeAlert) {
@@ -309,7 +247,6 @@ export default function TypingTest({
                         !highMistakeAlert &&
                         bestWpm < wpm && (
                             <>
-                                {createConfetti()}
                                 <CongratsModal
                                     isOpen={modalOpen}
                                     onClose={() => setModalOpen(false)}
@@ -319,99 +256,15 @@ export default function TypingTest({
                             </>
                         )}
                     {timesUp ? (
-                        <div className="mt-5 text-center pb-4 space-y-4 bordered rounded-xl p-4 sm:p-8 w-full max-w-4xl mx-auto">
-                            <p className="text-2xl sm:text-3xl font-semibold pb-2 border-bottom">
-                                Time's Up
-                            </p>
-                            <div className="text-lg text-gray-500 space-y-4">
-                                <p className="text-xl font-medium">
-                                    <span>Mistakes:</span>{" "}
-                                    <span>{mistakes}</span>
-                                </p>
-                                <p className="text-xl font-medium">
-                                    <span>Accuracy: </span>
-                                    <span>
-                                        {(
-                                            ((charIndex + 1 - mistakes) /
-                                                (charIndex + 1)) *
-                                            100
-                                        ).toFixed(2)}
-                                        %
-                                    </span>
-                                </p>
-
-                                {errorPoints.size > 0 && (
-                                    <p className="text-xl font-medium">
-                                        <span>Mistaken characters: </span>
-                                        {[...errorPoints]
-                                            .slice(0, 10)
-                                            .map((errorPoint, i) => (
-                                                <span key={i}>
-                                                    {paragraph[errorPoint]}
-                                                    {i !== 9 && ", "}
-                                                </span>
-                                            ))}
-                                        {errorPoints.size > 10 && (
-                                            <span>
-                                                +{errorPoints.size - 10} more
-                                                characters
-                                            </span>
-                                        )}
-                                    </p>
-                                )}
-
-                                {practiceWords.length > 0 && (
-                                    <div>
-                                        <p className="text-xl font-medium my-2">
-                                            Practice words:{" "}
-                                        </p>
-                                        <div className="flex flex-wrap justify-center py-2">
-                                            {practiceWords
-                                                .slice(0, 4)
-                                                .map((word, wordIndex) => (
-                                                    <div
-                                                        key={wordIndex}
-                                                        className="inline-block bordered py-2 px-4 sm:px-8 rounded-3xl m-1"
-                                                    >
-                                                        {word}
-                                                    </div>
-                                                ))}
-                                            {practiceWords.length > 4 && (
-                                                <div className="inline-block py-2 m-1">
-                                                    +{practiceWords.length - 4}{" "}
-                                                    more words
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            {user.id ? (
-                                                <p>
-                                                    <Link
-                                                        className="underline text-blue-500"
-                                                        to={
-                                                            "/typingtest/results"
-                                                        }
-                                                    >
-                                                        Click here
-                                                    </Link>{" "}
-                                                    to see your results
-                                                </p>
-                                            ) : (
-                                                <p>
-                                                    <Link
-                                                        to={"/auth/login"}
-                                                        className="underline text-blue-500"
-                                                    >
-                                                        Login
-                                                    </Link>{" "}
-                                                    to see your results
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                        <TypingTestSummary
+                            mistakes={mistakes}
+                            accuracy={(
+                                ((charIndex + 1 - mistakes) / (charIndex + 1)) *
+                                100
+                            ).toFixed(2)}
+                            errorPoints={errorPoints}
+                            practiceWords={practiceWords}
+                        />
                     ) : (
                         <TypingDisplay
                             charRefs={charRefs}

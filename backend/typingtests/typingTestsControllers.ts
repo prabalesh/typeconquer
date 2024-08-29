@@ -87,6 +87,7 @@ export const getTypingTestResult = async (req: UserRequest, res: Response) => {
         const skip = (page - 1) * limit;
 
         const testResults = await TestResultModel.find({ userID: req.user.id })
+            .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
