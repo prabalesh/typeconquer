@@ -8,7 +8,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             <Header />
             <main
                 className="flex flex-col items-center justify-center"
-                style={{ height: "80vh" }}
+                style={{ minHeight: "80vh" }}
             >
                 {children}
             </main>

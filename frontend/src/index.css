@@ -126,6 +126,79 @@ body {
 }
 
 .shake {
-    animation: shake 0.5s;
+    animation: shake 1s;
     animation-iteration-count: 1;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+    }
+}
+
+.confetti {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: red;
+    opacity: 0.7;
+    transform: rotate(45deg);
+    animation: confetti-fall 2s ease-out forwards;
+}
+
+.animated-border {
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 15px;
+    background: var(--bg-color);
+    border: 2px solid transparent;
+    z-index: 1;
+}
+
+.animated-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    border: 2px solid;
+    border-image: linear-gradient(90deg, #743ad5, #d53a9d) 1;
+    background-clip: padding-box;
+    background-origin: border-box;
+    animation: borderAnimation 3s ease-in infinite;
+    z-index: -1;
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-image: linear-gradient(90deg, #d53a9d, #743ad5) 1;
+    }
+    25% {
+        border-image: linear-gradient(25deg, #743ad5, #d53a9d) 1;
+    }
+    50% {
+        border-image: linear-gradient(90deg, #d53a9d, #743ad5) 1;
+    }
+    75% {
+        border-image: linear-gradient(25deg, #743ad5, #d53a9d) 1;
+    }
+    100% {
+        border-image: linear-gradient(90deg, #743ad5, #d53a9d) 1;
+    }
 }

@@ -16,6 +16,8 @@ const useTypingState = () => {
         useSelector((state: RootState) => state.typing);
     const dispatch = useDispatch();
 
+    const [highMistakeAlert, setHighMistakeAlert] = useState<boolean>(false);
+
     const expandParagraph = useCallback(async () => {
         if (paragraph.length >= charIndex + 80) return;
 
@@ -58,6 +60,18 @@ const useTypingState = () => {
             isMounted = false;
         };
     }, [charIndex, expandParagraph]);
+
+    const checkHighMistakes = useCallback(() => {
+        if (charIndex > 120 && mistakes > charIndex * 0.6) {
+            setHighMistakeAlert(true);
+        }
+    }, [charIndex, mistakes]);
+
+    useEffect(() => {
+        if (!highMistakeAlert) {
+            checkHighMistakes();
+        }
+    }, [mistakes, highMistakeAlert, checkHighMistakes]);
 
     const handleBackSpace = () => {
         setCharIndex((prevCharIndex) => {
@@ -116,6 +130,7 @@ const useTypingState = () => {
         handleBackSpace,
         maxCharIndex,
         errorPoints,
+        highMistakeAlert,
     ] as const;
 };
 
