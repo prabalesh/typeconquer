@@ -16,7 +16,7 @@
 .theme-light {
     --bg-color: #f0f0f0;
     --text-color: #333;
-    --accent-color: var(--color-primary);
+    --accent-color: #4834df;
     --button-bg: #f0f0f0;
     --button-text: #333;
     --button-hover: #333;
@@ -29,7 +29,7 @@
 .theme-dark {
     --bg-color: #1a1a1a;
     --text-color: #f0f0f0;
-    --accent-color: var(--color-danger);
+    --accent-color: #fad02e;
     --button-bg: #1a1a1a;
     --button-text: #fff;
     --button-hover: #6a89cc;
@@ -42,7 +42,7 @@
 .theme-purple {
     --bg-color: #1a1a1a;
     --text-color: #bb86fc;
-    --accent-color: #00f;
+    --accent-color: #fad02e;
     --button-bg: #1a1a1a;
     --button-text: #bb86fc;
     --button-hover: #bb86fc;
@@ -165,7 +165,6 @@ body {
     padding: 10px 20px;
     border-radius: 15px;
     background: var(--bg-color);
-    border: 2px solid transparent;
     z-index: 1;
 }
 
@@ -176,29 +175,32 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: 15px;
-    border: 2px solid;
-    border-image: linear-gradient(90deg, #743ad5, #d53a9d) 1;
-    background-clip: padding-box;
-    background-origin: border-box;
-    animation: borderAnimation 3s ease-in infinite;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(90deg, #743ad5, #d53a9d);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    animation: borderAnimation 3s ease-in-out infinite;
     z-index: -1;
 }
 
 @keyframes borderAnimation {
     0% {
-        border-image: linear-gradient(90deg, #d53a9d, #743ad5) 1;
+        background: linear-gradient(90deg, #d53a9d, #743ad5);
     }
     25% {
-        border-image: linear-gradient(25deg, #743ad5, #d53a9d) 1;
+        background: linear-gradient(25deg, #743ad5, #d53a9d);
     }
     50% {
-        border-image: linear-gradient(90deg, #d53a9d, #743ad5) 1;
+        background: linear-gradient(90deg, #d53a9d, #743ad5);
     }
     75% {
-        border-image: linear-gradient(25deg, #743ad5, #d53a9d) 1;
+        background: linear-gradient(25deg, #743ad5, #d53a9d);
     }
     100% {
-        border-image: linear-gradient(90deg, #743ad5, #d53a9d) 1;
+        background: linear-gradient(90deg, #d53a9d, #743ad5);
     }
 }
