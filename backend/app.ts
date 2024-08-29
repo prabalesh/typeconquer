@@ -3,6 +3,7 @@ import cors from "cors";
 
 import homeRoutes from "./home/homeRoutes";
 import authRoutes from "./auth/authRoutes";
+import typingTestsRoutes from "./typingtests/typingTestsRoutes";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config";
 
@@ -25,5 +26,6 @@ app.use(cookieParser());
 // routes
 app.use("/api", homeRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/typingtests", typingTestsRoutes);
 
 export default app;
