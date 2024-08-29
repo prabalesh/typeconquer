@@ -40,10 +40,10 @@ const Header: React.FC = () => {
 
                         {isModalOpen && (
                             <div
-                                className="flex flex-col gap-2 absolute top-20 right-4 w-56 sm:w-64 bg-[var(--bg-color)] shadow-lg rounded-lg p-4 z-50 bordered-1"
+                                className="flex flex-col gap-2 absolute top-20 right-4 w-56 sm:w-64 bg-[var(--bg-color)] shadow-lg rounded-lg z-50 bordered-1"
                                 style={{ minWidth: "200px" }}
                             >
-                                <div className="flex gap-4 pb-2 items-center">
+                                <div className="flex gap-4 p-4 border-bottom items-center">
                                     <img
                                         src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
                                         alt="Profile"
@@ -55,13 +55,23 @@ const Header: React.FC = () => {
                                         </p>
                                     </div>
                                 </div>
-                                <p className="text-sm truncate">{user.email}</p>
-                                <button
-                                    onClick={handleLogout}
-                                    className="mt-4 w-full bg-red-500 text-[-var(--text-color)] py-2 rounded bordered button transition-all"
-                                >
-                                    Logout
-                                </button>
+                                <div className="flex flex-col gap-2 px-2 py-2 truncate border-bottom">
+                                    <div className="">
+                                        <p className="text-sm truncate">
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                    <div className="cursor-pointer">
+                                        <Link to={"/typingtest/results"}>
+                                            Test Results
+                                        </Link>
+                                    </div>
+                                </div>
+                                <div className="py-2 text-center">
+                                    <button onClick={handleLogout}>
+                                        Logout
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </>
