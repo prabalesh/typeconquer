@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import { Routes, Route } from "react-router-dom";
+import TypingTestResults from "./pages/TypingTestResults";
 
 function App() {
     const dispatch = useDispatch();
@@ -59,6 +60,10 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/auth/register" element={<Register />} />
                     <Route path="/auth/login" element={<Register />} />
+                    <Route
+                        path="/typingtest/results"
+                        element={<TypingTestResults />}
+                    />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Layout>

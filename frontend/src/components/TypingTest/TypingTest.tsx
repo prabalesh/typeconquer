@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
 import { setTimeLimit } from "../../features/typing/typingSlice";
 import LowAccurarcyWarning from "./LowAccuracuWarning";
+import { Link } from "react-router-dom";
 
 const CongratsModal = ({
     isOpen,
@@ -380,6 +381,31 @@ export default function TypingTest({
                                                     +{practiceWords.length - 4}{" "}
                                                     more words
                                                 </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {user.id ? (
+                                                <p>
+                                                    <Link
+                                                        className="underline text-blue-500"
+                                                        to={
+                                                            "/typingtest/results"
+                                                        }
+                                                    >
+                                                        Click here
+                                                    </Link>{" "}
+                                                    to see your results
+                                                </p>
+                                            ) : (
+                                                <p>
+                                                    <Link
+                                                        to={"/auth/login"}
+                                                        className="underline text-blue-500"
+                                                    >
+                                                        Login
+                                                    </Link>{" "}
+                                                    to see your results
+                                                </p>
                                             )}
                                         </div>
                                     </div>

@@ -16,6 +16,20 @@ function TypingDisplay({
     const [isMobile, setIsMobile] = useState(false);
     const [lineLength, setLineLength] = useState(60);
 
+    const [textAlign, setTextAlign] = useState(() => {
+        const savedTextAlign = localStorage.getItem("textAlign");
+        return savedTextAlign
+            ? savedTextAlign
+            : savedTextAlign === ""
+            ? ""
+            : "justify-around";
+    });
+
+    // Effect to save textAlign to localStorage on change
+    useEffect(() => {
+        localStorage.setItem("textAlign", textAlign);
+    }, [textAlign]);
+
     useEffect(() => {
         function checkIfMobile() {
             // Check for mobile device using user agent or window width
@@ -115,6 +129,75 @@ function TypingDisplay({
             }}
             onClick={() => inputRef.current?.focus()}
         >
+            {!isMobile && (
+                <div className="flex justify-center gap-4">
+                    <div
+                        className={`p-2 ${
+                            textAlign === "" && "text-[var(--text-color)]"
+                        }`}
+                        onClick={() => setTextAlign("")}
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            />
+                        </svg>
+                    </div>
+                    <div
+                        className={`p-2 ${
+                            textAlign === "justify-center" &&
+                            "text-[var(--text-color)]"
+                        }`}
+                        onClick={() => setTextAlign("justify-center")}
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-width="2"
+                                d="M4 6h16M6 12h12M4 18h16"
+                            />
+                        </svg>
+                    </div>
+                    <div
+                        className={`p-2 ${
+                            textAlign === "justify-around" &&
+                            "text-[var(--text-color)]"
+                        }`}
+                        onClick={() => setTextAlign("justify-around")}
+                    >
+                        <svg
+                            width="24"
+                            height="24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                stroke="currentColor"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            />
+                            <path
+                                stroke="currentColor"
+                                stroke-width="2"
+                                d="M4 6v12M20 6v12"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            )}
+
             {visibleLines.map((line, lno) => {
                 const lineStartIndex = lines
                     .slice(0, startLineIndex + lno)
@@ -123,7 +206,7 @@ function TypingDisplay({
                 return (
                     <div
                         key={lno}
-                        className={`flex ${!isMobile && "justify-between"}`}
+                        className={`flex ${!isMobile && textAlign}`}
                         style={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                     >
                         {line.split("").map((char, i) => {
@@ -142,7 +225,7 @@ function TypingDisplay({
                                         isCharCorrectWrong[currentCharPosition]
                                     } ${
                                         charIndex === currentCharPosition
-                                            ? "border-b-2 border-[var(--accent-color)]"
+                                            ? "border-b-4 border-[var(--accent-color)]"
                                             : ""
                                     }`}
                                     style={{ whiteSpace: "pre" }}
