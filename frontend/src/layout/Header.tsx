@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useLogout } from "../hooks/useLogout";
+import ThemeSelector from "./ThemeSelector";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -40,8 +41,8 @@ const Header: React.FC = () => {
 
                         {isModalOpen && (
                             <div
-                                className="flex flex-col gap-2 absolute top-20 right-4 w-56 sm:w-64 bg-[var(--bg-color)] shadow-lg rounded-lg z-50 bordered-1"
-                                style={{ minWidth: "200px" }}
+                                className="flex flex-col gap-2 absolute top-20 right-4 bg-[var(--highlighted-color)] shadow-lg rounded-lg z-50 bordered-1"
+                                style={{ minWidth: "250px" }}
                             >
                                 <div className="flex gap-4 p-4 border-bottom items-center">
                                     <img
@@ -66,6 +67,9 @@ const Header: React.FC = () => {
                                             Test Results
                                         </Link>
                                     </div>
+                                </div>
+                                <div className="p-2 border-bottom flex">
+                                    Theme: <ThemeSelector border={false} />
                                 </div>
                                 <div className="py-2 text-center">
                                     <button onClick={handleLogout}>
