@@ -3,6 +3,8 @@ import cors from "cors";
 
 import homeRoutes from "./home/homeRoutes";
 import authRoutes from "./auth/authRoutes";
+import friendsRoutes from "./friendship/friendshipRoutes";
+
 import typingTestsRoutes from "./typingtests/typingTestsRoutes";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config";
@@ -27,5 +29,6 @@ app.use(cookieParser());
 app.use("/api", homeRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/typingtests", typingTestsRoutes);
+app.use("/api/friends", friendsRoutes);
 
 export default app;
