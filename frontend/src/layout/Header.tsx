@@ -69,7 +69,7 @@ const Header: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="p-2 border-bottom flex">
-                                    Theme: <ThemeSelector border={false} />
+                                    <ThemeSelector border={false} />
                                 </div>
                                 <div className="py-2 text-center">
                                     <button onClick={handleLogout}>
@@ -81,12 +81,6 @@ const Header: React.FC = () => {
                     </>
                 ) : (
                     <>
-                        <Link
-                            to={"/auth/login"}
-                            className="bg-[var(--primary-color)] text-[-var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"
-                        >
-                            Login
-                        </Link>
                         <Link
                             to={"/auth/register"}
                             className="bg-[var(--secondary-color)] text-[-var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"

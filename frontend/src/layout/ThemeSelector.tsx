@@ -53,9 +53,9 @@ function ThemeSelector({ border }: { border: boolean }) {
         <div>
             <button
                 onClick={toggleDropdown}
-                className={`px-2 ${
+                className={`${
                     border &&
-                    "border rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
+                    "px-4 py-2 border rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
                 } text-[var(--button-text)] text-sm sm:text-base`}
             >
                 {theme.charAt(0).toUpperCase() + theme.slice(1)}
