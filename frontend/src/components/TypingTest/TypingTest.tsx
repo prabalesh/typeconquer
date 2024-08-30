@@ -1,7 +1,7 @@
 import TypingDisplay from "./TypingDisplay";
 import TypingInput from "./TypingInput";
 
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import TypingStats from "./TypingStats";
 import useTimer from "../../hooks/useTimer";
 import useTypingStats from "../../hooks/useTypingStats";
@@ -48,6 +48,7 @@ export default function TypingTest({
         maxCharIndex,
         errorPoints,
         highMistakeAlert,
+        handleCtrlBackspace,
     } = useTypingState();
 
     const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] =
@@ -61,31 +62,90 @@ export default function TypingTest({
         timeLeft
     );
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (paragraph.length > charIndex && timeLeft !== 0 && !timesUp) {
-            if (!isTyping) {
-                if (startTime === null) setStartTime(new Date().getTime());
-                setIsTyping(true);
+    const handleInputChange = useCallback(
+        (key: string, ctrlKey: boolean) => {
+            // Check for specific keys like Backspace
+            if (isTyping && key === "Backspace") {
+                if (ctrlKey) {
+                    console.log("Ctrl + Backspace");
+                    handleCtrlBackspace();
+                } else {
+                    handleBackSpace();
+                }
             }
-            if (e.target.value.length !== charIndex + 1) {
-                handleBackSpace();
-                return;
+            // Handle valid alphanumeric and symbol inputs
+            else if (
+                !ctrlKey &&
+                /^[a-zA-Z0-9 `~!@#$%^&*()-_=+[\]{};:'",.<>?/\\|]$/.test(key)
+            ) {
+                if (ctrlKey) return;
+                console.log(
+                    `Key: ${key}, Match: ${key === paragraph[charIndex]}`
+                );
+                if (
+                    paragraph.length > charIndex &&
+                    timeLeft !== 0 &&
+                    !timesUp
+                ) {
+                    if (!isTyping) {
+                        if (startTime === null)
+                            setStartTime(new Date().getTime());
+                        setIsTyping(true);
+                    }
+                    if (charIndex >= paragraph.length) setTimesUp(true);
+                    handleCharInput(key, paragraph[charIndex]);
+
+                    if (paragraph.length <= charIndex + 1) {
+                        setTimesUp(true);
+                        setIsTyping(false);
+                    }
+                } else {
+                    setTimesUp(true);
+                    setIsTyping(false);
+                }
             }
+        },
+        [
+            charIndex,
+            handleBackSpace,
+            handleCharInput,
+            handleCtrlBackspace,
+            isTyping,
+            paragraph,
+            setTimesUp,
+            startTime,
+            timeLeft,
+            timesUp,
+        ]
+    );
 
-            const typedChar = e.target.value.slice(-1);
-            const currentChar = paragraph[charIndex];
+    useEffect(() => {
+        const inputElement = inputRef.current;
 
-            handleCharInput(typedChar, currentChar);
+        if (inputElement) {
+            const handleKeyDown = (e: KeyboardEvent) => {
+                handleInputChange(e.key, e.ctrlKey);
+                // Blur input on Escape
+                if (e.key === "Escape") {
+                    inputElement.blur();
+                }
+            };
 
-            if (paragraph.length <= charIndex + 1) {
-                setTimesUp(true);
-                setIsTyping(false);
-            }
-        } else {
-            setTimesUp(true);
-            setIsTyping(false);
+            inputElement.addEventListener("keydown", handleKeyDown);
+
+            return () => {
+                inputElement.removeEventListener("keydown", handleKeyDown);
+            };
         }
-    };
+    }, [
+        inputRef,
+        paragraph,
+        charIndex,
+        handleCharInput,
+        handleCtrlBackspace,
+        handleBackSpace,
+        handleInputChange,
+    ]);
 
     const resetGame = useCallback(() => {
         setTimeLeft(timeLimit);
@@ -128,7 +188,6 @@ export default function TypingTest({
     }, [errorPoints, maxCharIndex, paragraph]);
 
     const fetchBestResult = useCallback(async () => {
-        console.log("working");
         const apiURL = `${
             import.meta.env.VITE_API_URL
         }/api/typingtests/bestresult`;
@@ -144,8 +203,6 @@ export default function TypingTest({
                     setBestWpm(data["bestWPM"]);
                 }
             }
-        } else {
-            console.log("error");
         }
     }, []);
 
@@ -158,7 +215,7 @@ export default function TypingTest({
             ((charIndex + 1 - mistakes) / (charIndex + 1)) *
             100
         ).toFixed(2);
-        const res = await fetch(`${apiURL}/api/typingtests/result`, {
+        await fetch(`${apiURL}/api/typingtests/result`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -172,9 +229,6 @@ export default function TypingTest({
                 text: paragraph.slice(0, maxCharIndex + 1).join(""),
             }),
         });
-        if (res.ok) {
-            console.log("Okay");
-        }
     }, [
         charIndex,
         errorPoints,
@@ -225,10 +279,7 @@ export default function TypingTest({
                 timesUp && "shake"
             }`}
         >
-            <TypingInput
-                handleInputChange={handleInputChange}
-                inputRef={inputRef}
-            />
+            <TypingInput inputRef={inputRef} />
             {highMistakeAlert && (
                 <LowAccurarcyWarning
                     resetGame={() => setResetGameFlag(true)}
@@ -287,6 +338,17 @@ export default function TypingTest({
                     setResetGameFlag(true);
                 }}
             />
+            <div className="my-4">
+                <p className="text-sm">
+                    <span
+                        className="bg-[var(--button-hover)] text-[var(--button-hover-text)] rounded px-1 inline-block text-center"
+                        style={{ width: "50px" }}
+                    >
+                        esc
+                    </span>{" "}
+                    - unfocus
+                </p>
+            </div>
         </div>
     );
 }

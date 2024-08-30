@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
-
 function TypingInput({
-    handleInputChange,
+    // handleInputChange,
     inputRef,
 }: {
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    // handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     inputRef: React.RefObject<HTMLInputElement>;
 }) {
-    const [inputText, setInputText] = useState("");
-
-    useEffect(() => {
-        inputRef?.current?.focus();
-    });
-
     return (
-        <input
-            className="opacity-0"
-            ref={inputRef}
-            type="text"
-            value={inputText}
-            onChange={(e) => {
-                setInputText(e.target.value);
-                handleInputChange(e);
-            }}
-        />
+        <div className="text-center">
+            <input className="opacity-0" ref={inputRef} type="text" />
+        </div>
     );
 }
 

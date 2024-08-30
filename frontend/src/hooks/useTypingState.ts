@@ -11,6 +11,7 @@ const useTypingState = () => {
     const dispatch = useDispatch();
 
     const [charIndex, setCharIndex] = useState<number>(0);
+    const [charIndexAfterSpace, setCharIndexAfterSpace] = useState<number>(0);
     const [maxCharIndex, setMaxCharIndex] = useState<number>(0);
 
     const [mistakes, setMistakes] = useState<number>(0);
@@ -54,6 +55,28 @@ const useTypingState = () => {
         }
     }, [charIndex, mistakes]);
 
+    const handleCtrlBackspace = () => {
+        if (charIndex != charIndexAfterSpace) {
+            setIsCharCorrectWrong((prevState) => {
+                for (let i = charIndexAfterSpace; i < charIndex; i++) {
+                    prevState[i] = "";
+                }
+                return prevState;
+            });
+            setCharIndex(charIndexAfterSpace);
+        }
+    };
+
+    useEffect(() => {
+        if (
+            charIndex != 0 &&
+            paragraph[charIndex - 1] === " " &&
+            paragraph[charIndex] !== " "
+        ) {
+            setCharIndexAfterSpace(charIndex);
+        }
+    }, [charIndex, paragraph]);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -85,7 +108,6 @@ const useTypingState = () => {
                     newState[prevCharIndex - 1] == "text-red-500" ||
                     newState[prevCharIndex - 1] == "bg-red-500"
                 ) {
-                    console.log("mistake gone");
                     setMistakes((prevMistakes) =>
                         prevMistakes - 1 < 0 ? 0 : prevMistakes - 1
                     );
@@ -136,6 +158,7 @@ const useTypingState = () => {
         maxCharIndex,
         errorPoints,
         highMistakeAlert,
+        handleCtrlBackspace,
     };
 };
 
