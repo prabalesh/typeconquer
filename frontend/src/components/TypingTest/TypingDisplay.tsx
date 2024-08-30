@@ -3,12 +3,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 
 function TypingDisplay({
-    charRefs,
     charIndex,
     isCharCorrectWrong,
     inputRef,
 }: {
-    charRefs: React.RefObject<(HTMLSpanElement | null)[]>;
     charIndex: number;
     isCharCorrectWrong: string[];
     inputRef: React.RefObject<HTMLInputElement>;
@@ -214,21 +212,16 @@ function TypingDisplay({
                             return (
                                 <span
                                     key={i}
-                                    ref={(ele) => {
-                                        if (charRefs.current) {
-                                            charRefs.current[
-                                                currentCharPosition
-                                            ] = ele;
-                                        }
-                                    }}
                                     className={`text-sm sm:text-base md:text-2xl between-md-lg:text-lg lg:text-3xl ${
                                         isCharCorrectWrong[currentCharPosition]
                                     } ${
                                         charIndex === currentCharPosition
-                                            ? "border-b-2 border-[var(--accent-color)]"
+                                            ? "cur-cursor"
                                             : ""
                                     }`}
-                                    style={{ whiteSpace: "pre" }}
+                                    style={{
+                                        whiteSpace: "pre",
+                                    }}
                                 >
                                     {char === " " ? "\u00A0" : char}
                                 </span>

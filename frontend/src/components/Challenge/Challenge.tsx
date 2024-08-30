@@ -1,29 +1,25 @@
-import TypingDisplay from "./TypingDisplay";
-import TypingInput from "./TypingInput";
+import TypingDisplay from "../TypingTest/TypingDisplay";
+import TypingInput from "../TypingTest/TypingInput";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import TypingStats from "./TypingStats";
+import TypingStats from "../TypingTest/TypingStats";
 import useTypingState from "../../hooks/useTypingState";
-import TypingOptions from "./TypingOptions";
+
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../app/store";
-import { setTimeLimit } from "../../features/typing/typingSlice";
-import LowAccurarcyWarning from "./LowAccuracuWarning";
-import CongratsModal from "../CongratsModal";
-import TypingTestSummary from "./TypingTestSummary";
 
-export default function TypingTest({
-    handleGenerateParagraph,
-}: {
-    handleGenerateParagraph: () => void;
-}) {
+import CongratsModal from "../CongratsModal";
+import TypingTestSummary from "../TypingTest/TypingTestSummary";
+import { setParagraph } from "../../features/typing/typingSlice";
+
+export default function TypingTest() {
     const dispatch = useDispatch<AppDispatch>();
+    dispatch(setParagraph("this is testing paragraph".split("")));
+
     const { paragraph, timeLimit } = useSelector(
         (state: RootState) => state.typing
     );
     const user = useSelector((state: RootState) => state.user);
-
-    const [resetGameFlag, setResetGameFlag] = useState<boolean>(false);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -41,34 +37,11 @@ export default function TypingTest({
         errorPoints,
         highMistakeAlert,
         timeLeft,
-        setTimeLeft,
         timesUp,
-        setTimesUp,
         wpm,
         cpm,
-        setStartTime,
         isTyping,
-        setIsTyping,
     } = useTypingState(inputRef);
-
-    const resetGame = useCallback(() => {
-        setTimeLeft(timeLimit);
-        setIsTyping(false);
-        setStartTime(null);
-        setTimesUp(false);
-        inputRef.current?.focus();
-        if (resetGameFlag) {
-            handleGenerateParagraph();
-        }
-    }, [
-        setTimeLeft,
-        timeLimit,
-        setIsTyping,
-        setStartTime,
-        setTimesUp,
-        resetGameFlag,
-        handleGenerateParagraph,
-    ]);
 
     const findPracticeWords = useCallback(() => {
         const content = paragraph.slice(0, maxCharIndex + 1).join("");
@@ -148,15 +121,6 @@ export default function TypingTest({
     ]);
 
     useEffect(() => {
-        resetGame();
-        setResetGameFlag(false);
-    }, [timeLimit, resetGame, resetGameFlag]);
-
-    useEffect(() => {
-        localStorage.setItem("ctime", timeLimit.toString());
-    }, [timeLimit]);
-
-    useEffect(() => {
         if (timesUp) {
             submitResult();
             findPracticeWords();
@@ -176,15 +140,6 @@ export default function TypingTest({
             }`}
         >
             <TypingInput inputRef={inputRef} />
-            {highMistakeAlert && (
-                <LowAccurarcyWarning
-                    resetGame={() => setResetGameFlag(true)}
-                    accuracy={(
-                        ((charIndex + 1 - mistakes) / (charIndex + 1)) *
-                        100
-                    ).toFixed(2)}
-                />
-            )}
             {paragraph.length > 0 && (
                 <>
                     {timesUp &&
@@ -225,13 +180,7 @@ export default function TypingTest({
                 timeLeft={timeLeft}
                 wpm={wpm}
                 cpm={cpm}
-                resetGame={() => setResetGameFlag(true)}
-            />
-            <TypingOptions
-                setTimeLimit={(newTimeLimit) => {
-                    dispatch(setTimeLimit(newTimeLimit));
-                    setResetGameFlag(true);
-                }}
+                resetGame={null}
             />
 
             <div className="my-4">

@@ -1,8 +1,6 @@
 function TypingInput({
-    // handleInputChange,
     inputRef,
 }: {
-    // handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     inputRef: React.RefObject<HTMLInputElement>;
 }) {
     return (
