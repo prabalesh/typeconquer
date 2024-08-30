@@ -12,22 +12,21 @@ import LowAccurarcyWarning from "./LowAccuracuWarning";
 import CongratsModal from "../CongratsModal";
 import TypingTestSummary from "./TypingTestSummary";
 
+import { setParagraph } from "../../features/typing/typingSlice";
+
 export default function TypingTest({
     handleGenerateParagraph,
 }: {
     handleGenerateParagraph: () => void;
 }) {
     const dispatch = useDispatch<AppDispatch>();
-    const { paragraph, timeLimit } = useSelector(
-        (state: RootState) => state.typing
-    );
+    const { paragraph, timeLimit, difficulty, includeNumbers, includeSymbols } =
+        useSelector((state: RootState) => state.typing);
     const user = useSelector((state: RootState) => state.user);
 
     const [resetGameFlag, setResetGameFlag] = useState<boolean>(false);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
-
-    const [practiceWords, setPracticeWords] = useState<string[]>([]);
 
     const [bestWpm, setBestWpm] = useState<number>(0);
 
@@ -49,7 +48,8 @@ export default function TypingTest({
         setStartTime,
         isTyping,
         setIsTyping,
-    } = useTypingState(inputRef);
+        practiceWords,
+    } = useTypingState(inputRef, timeLimit);
 
     const resetGame = useCallback(() => {
         setTimeLeft(timeLimit);
@@ -69,29 +69,6 @@ export default function TypingTest({
         resetGameFlag,
         handleGenerateParagraph,
     ]);
-
-    const findPracticeWords = useCallback(() => {
-        const content = paragraph.slice(0, maxCharIndex + 1).join("");
-        const points = [...errorPoints];
-
-        const words = content.split(" ");
-
-        const filteredWords = words.filter((word, wordIndex) => {
-            const startIdx = content.indexOf(
-                word,
-                wordIndex === 0
-                    ? 0
-                    : content.indexOf(words[wordIndex - 1]) +
-                          words[wordIndex - 1].length +
-                          1
-            );
-            return points.some(
-                (point) => point >= startIdx && point < startIdx + word.length
-            );
-        });
-
-        setPracticeWords(filteredWords);
-    }, [errorPoints, maxCharIndex, paragraph]);
 
     const fetchBestResult = useCallback(async () => {
         const apiURL = `${
@@ -147,6 +124,50 @@ export default function TypingTest({
         wpm,
     ]);
 
+    // dynamic paragraph expansion
+    const expandParagraph = useCallback(async () => {
+        if (paragraph.length >= charIndex + 80) return;
+
+        const res = await fetch(
+            `${
+                import.meta.env.VITE_API_URL
+            }/api/generate-paragraph?difficulty=${difficulty}&includeSymbols=${includeSymbols}&includeNumbers=${includeNumbers}`
+        );
+        if (!res.ok) {
+            return;
+        }
+
+        const data = await res.json();
+        if (typeof data === "object" && "words" in data) {
+            const words: string[] = data.words as string[];
+            const newParagraph = [...paragraph, ...words];
+            dispatch(setParagraph(newParagraph));
+        }
+    }, [
+        charIndex,
+        difficulty,
+        dispatch,
+        includeNumbers,
+        includeSymbols,
+        paragraph,
+    ]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const fetchParagraph = async () => {
+            if (isMounted) {
+                await expandParagraph();
+            }
+        };
+
+        fetchParagraph();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [charIndex, expandParagraph]);
+
     useEffect(() => {
         resetGame();
         setResetGameFlag(false);
@@ -157,17 +178,16 @@ export default function TypingTest({
     }, [timeLimit]);
 
     useEffect(() => {
-        if (timesUp) {
-            submitResult();
-            findPracticeWords();
-        }
-    }, [timesUp, findPracticeWords, submitResult]);
-
-    useEffect(() => {
         if (isTyping && user.id) {
             fetchBestResult();
         }
     }, [fetchBestResult, isTyping, user.id]);
+
+    useEffect(() => {
+        if (timesUp) {
+            submitResult();
+        }
+    }, [timesUp, submitResult]);
 
     return (
         <div

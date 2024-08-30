@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { useDispatch } from "react-redux";
-import { setParagraph } from "../features/typing/typingSlice";
+
 import useTimer from "./useTimer";
 import useTypingStats from "./useTypingStats";
 
-const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
-    const { paragraph, difficulty, includeSymbols, includeNumbers, timeLimit } =
-        useSelector((state: RootState) => state.typing);
-
-    const dispatch = useDispatch();
+const useTypingState = (
+    inputRef: React.RefObject<HTMLInputElement>,
+    timeLimit: number
+) => {
+    const { paragraph } = useSelector((state: RootState) => state.typing);
 
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<number | null>(null);
@@ -25,6 +24,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
     const [isCharCorrectWrong, setIsCharCorrectWrong] = useState<string[]>([]);
 
     const [errorPoints, setErrorPoints] = useState<Set<number>>(new Set());
+    const [practiceWords, setPracticeWords] = useState<string[]>([]);
 
     const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] = useTimer(
         isTyping,
@@ -37,34 +37,6 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         startTime,
         timeLeft
     );
-
-    // dynamic paragraph expansion
-    const expandParagraph = useCallback(async () => {
-        if (paragraph.length >= charIndex + 80) return;
-
-        const res = await fetch(
-            `${
-                import.meta.env.VITE_API_URL
-            }/api/generate-paragraph?difficulty=${difficulty}&includeSymbols=${includeSymbols}&includeNumbers=${includeNumbers}`
-        );
-        if (!res.ok) {
-            return;
-        }
-
-        const data = await res.json();
-        if (typeof data === "object" && "words" in data) {
-            const words: string[] = data.words as string[];
-            const newParagraph = [...paragraph, ...words];
-            dispatch(setParagraph(newParagraph));
-        }
-    }, [
-        charIndex,
-        difficulty,
-        dispatch,
-        includeNumbers,
-        includeSymbols,
-        paragraph,
-    ]);
 
     const checkHighMistakes = useCallback(() => {
         if (charIndex > 120 && mistakes > charIndex * 0.6) {
@@ -186,6 +158,35 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         ]
     );
 
+    const findPracticeWords = useCallback(() => {
+        const content = paragraph.slice(0, maxCharIndex + 1).join("");
+        const points = [...errorPoints];
+
+        const words = content.split(" ");
+
+        const filteredWords = words.filter((word, wordIndex) => {
+            const startIdx = content.indexOf(
+                word,
+                wordIndex === 0
+                    ? 0
+                    : content.indexOf(words[wordIndex - 1]) +
+                          words[wordIndex - 1].length +
+                          1
+            );
+            return points.some(
+                (point) => point >= startIdx && point < startIdx + word.length
+            );
+        });
+
+        setPracticeWords(filteredWords);
+    }, [errorPoints, maxCharIndex, paragraph]);
+
+    useEffect(() => {
+        if (timesUp) {
+            findPracticeWords();
+        }
+    }, [timesUp, findPracticeWords]);
+
     useEffect(() => {
         const inputElement = inputRef.current;
 
@@ -225,22 +226,6 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
     }, [charIndex, paragraph]);
 
     useEffect(() => {
-        let isMounted = true;
-
-        const fetchParagraph = async () => {
-            if (isMounted) {
-                await expandParagraph();
-            }
-        };
-
-        fetchParagraph();
-
-        return () => {
-            isMounted = false;
-        };
-    }, [charIndex, expandParagraph]);
-
-    useEffect(() => {
         if (!highMistakeAlert) {
             checkHighMistakes();
         }
@@ -272,6 +257,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         setStartTime,
         isTyping,
         setIsTyping,
+        practiceWords,
     };
 };
 

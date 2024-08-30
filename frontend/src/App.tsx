@@ -64,6 +64,7 @@ function App() {
                         path="/typingtest/results"
                         element={<TypingTestResults />}
                     />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Layout>
