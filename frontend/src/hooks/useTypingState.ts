@@ -187,7 +187,6 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
     useEffect(() => {
         const inputElement = inputRef.current;
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-        let previousValue = "";
 
         if (inputElement) {
             const handleKeyDown = (e: KeyboardEvent) => {
@@ -199,20 +198,15 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
             };
 
             const handleInput = () => {
-                const currentValue = inputElement.value;
-
-                if (previousValue.length > currentValue.length) {
+                if (charIndex > inputElement.value.length) {
                     handleInputChange("Backspace", false);
                 } else {
-                    const lastChar = currentValue[currentValue.length - 1];
-                    handleInputChange(lastChar, false);
+                    handleInputChange(inputElement.value[-1], false);
                 }
-                previousValue = currentValue;
             };
 
             inputElement.addEventListener("keydown", handleKeyDown);
             if (isMobile) {
-                previousValue = inputElement.value;
                 inputElement.addEventListener("input", handleInput);
             }
 
