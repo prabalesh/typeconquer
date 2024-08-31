@@ -121,6 +121,12 @@ function Friendbar() {
                         </div>
                     )}
                 </div>
+                <div>
+                    <i
+                        className="fa-solid fa-rotate-right"
+                        onClick={() => fetchFriendList()}
+                    ></i>
+                </div>
             </div>
             {friendlistLoading ? (
                 <Spinner />
