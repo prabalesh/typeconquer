@@ -3,6 +3,7 @@ import FriendRequestModal from "./FriendRequestModal";
 import PendingRequestsModal from "./PendingRequestModal";
 import Spinner from "../Spinner";
 import formatRelativeTime from "../../utils/relativeTime";
+import { toast } from "react-toastify";
 
 export interface PendingRequestType {
     _id: string;
@@ -103,7 +104,13 @@ function Friendbar() {
                 <div className="relative inline-block">
                     <i
                         className="fa-solid fa-user-clock"
-                        onClick={() => setOpenPendingRequest(true)}
+                        onClick={() => {
+                            if (pendingRequests.length > 0) {
+                                setOpenPendingRequest(true);
+                            } else {
+                                toast.error("No pending requests!");
+                            }
+                        }}
                     ></i>
                     {pendingRequests.length > 0 && (
                         <div>

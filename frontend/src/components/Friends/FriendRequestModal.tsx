@@ -30,7 +30,7 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({
             const apiURL = `${
                 import.meta.env.VITE_API_URL
             }/api/friends/request`;
-            const response = await fetch(apiURL, {
+            const res = await fetch(apiURL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -39,12 +39,19 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({
                 body: JSON.stringify({ username }),
             });
 
-            if (!response.ok) {
+            if (!res.ok) {
                 throw new Error("Failed to send friend request");
             }
+            const data = await res.json();
 
-            setSuccess("Friend request sent successfully");
-            toast.success("Friend request send succuessfully");
+            if (data["success"]) {
+                setSuccess(data["message"]);
+                toast.success(data["message"]);
+            } else {
+                setError(data["message"]);
+                toast.error(data["message"]);
+            }
+
             setUsername("");
             setTimeout(onClose, 2000);
         } catch (error: unknown) {
@@ -66,8 +73,14 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({
 
     return (
         <>
-            <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-[--bg-color] p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+                <div className="relative bg-[--bg-color] p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <button
+                        onClick={onClose}
+                        className="absolute top-4 right-4 text-[--highlighted-text] hover:text-[--button-hover] text-3xl"
+                    >
+                        &times;
+                    </button>
                     <h2 className="text-lg font-semibold mb-4 text-center text-[var(--heading-color)]">
                         Send Friend Request
                     </h2>
@@ -75,7 +88,7 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({
                     {success && (
                         <p className="text-green-500 mb-4">{success}</p>
                     )}
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} autoComplete="off">
                         <input
                             type="text"
                             id="receiverId"
@@ -87,16 +100,9 @@ const FriendRequestModal: React.FC<FriendRequestModalProps> = ({
                         />
                         <div className="flex justify-center">
                             <button
-                                type="button"
-                                onClick={onClose}
-                                className="bg-[--highlighted-color] text-[--highlighted-text] rounded-md py-2 px-4 mr-2"
-                            >
-                                Cancel
-                            </button>
-                            <button
                                 type="submit"
                                 disabled={loading}
-                                className={`bg-[--button-hover] text-[--button-hover-text] rounded-md py-2 px-4 ${
+                                className={`bg-[--button-hover] text-[--button-hover-text] rounded-3xl py-2 px-4 ${
                                     loading
                                         ? "opacity-50 cursor-not-allowed"
                                         : ""

@@ -127,7 +127,7 @@ const FriendListModal: React.FC<FriendModalProps> = ({
             <div className="bg-[--highlighted-color] rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative">
                 <button
                     onClick={closeModal}
-                    className="absolute top-4 right-4 text-[--highlighted-text] hover:text-gray-800"
+                    className="absolute top-4 right-4 text-[--highlighted-text] hover:text-[--button-hover] text-3xl"
                 >
                     &times;
                 </button>
@@ -153,9 +153,13 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                         {filteredFriends.length > 0 ? (
                             filteredFriends.map((friend) => (
                                 <li key={friend._id} className="mb-2">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="h-10 w-10 rounded-full bg-gray-300"></div>
-                                        <div className="w-100 flex gap-4">
+                                    <div className="flex items-center space-x-3 justify-around">
+                                        <div className="flex gap-4 truncate">
+                                            <img
+                                                src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
+                                                alt="Profile"
+                                                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                            />
                                             <div>
                                                 <h3 className="font-semibold">
                                                     {friend.name}
@@ -164,24 +168,24 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                                                     @{friend.username}
                                                 </p>
                                             </div>
-                                            <div>
-                                                {!friend.challenge ? (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleCreateChallenge(
-                                                                friend
-                                                            )
-                                                        }
-                                                        className="border px-4 py-1 border-[--border-color] rounded hover:bg-[--button-hover] hover:text-[--button-hover-text]"
-                                                    >
-                                                        Challenge
-                                                    </button>
-                                                ) : (
-                                                    <div className="order px-4 py-1 border-[--border-color] rounded bg-[--button-hover] text-[--button-hover-text]">
-                                                        Challenged
-                                                    </div>
-                                                )}
-                                            </div>
+                                        </div>
+                                        <div className="">
+                                            {!friend.challenge ? (
+                                                <button
+                                                    onClick={() =>
+                                                        handleCreateChallenge(
+                                                            friend
+                                                        )
+                                                    }
+                                                    className="border px-4 py-1 border-[--border-color] rounded hover:bg-[--button-hover] hover:text-[--button-hover-text]"
+                                                >
+                                                    Challenge
+                                                </button>
+                                            ) : (
+                                                <div className="order px-4 py-1 border-[--border-color] rounded bg-[--button-hover] text-[--button-hover-text]">
+                                                    Challenged
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </li>

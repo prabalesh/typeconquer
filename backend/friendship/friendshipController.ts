@@ -57,11 +57,17 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
     if (!user) {
         return res
             .status(404)
-            .json({ success: false, message: "username not found" });
+            .json({ success: false, message: "Username not found" });
     }
     const userID = req.user.id;
 
     try {
+        if (user._id.toString() === userID) {
+            return res.json({
+                success: false,
+                message: "Can't send friend request to yourself.",
+            });
+        }
         const existingRequest = await Friendship.findOne({
             requester: userID,
             receiver: user._id,
@@ -71,7 +77,10 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
         if (existingRequest) {
             return res
                 .status(400)
-                .json({ message: "Friend request already exists" });
+                .json({
+                    success: false,
+                    message: "Friend request already exists",
+                });
         }
 
         const friendship = new Friendship({
@@ -81,7 +90,10 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
         });
 
         await friendship.save();
-        res.status(201).json({ success: true, friendship });
+        res.status(201).json({
+            success: true,
+            message: "Friend request send successfully",
+        });
     } catch (error) {
         console.log("error send request", error);
         res.status(500).json({ message: "Internal server error" });
