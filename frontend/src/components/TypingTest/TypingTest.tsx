@@ -53,7 +53,7 @@ export default function TypingTest({
         isTyping,
         setIsTyping,
         practiceWords,
-    } = useTypingState(inputRef, timeLimit);
+    } = useTypingState(inputRef);
 
     const resetGame = useCallback(() => {
         setTimeLeft(timeLimit);
