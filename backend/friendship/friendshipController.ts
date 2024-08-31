@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Friendship from "./FriendshipModel";
+import User from "../auth/UserModel";
 
 interface UserPayload {
     id: string;
@@ -27,7 +28,9 @@ export const getAllFriends = async (req: UserRequest, res: Response) => {
                     status: "accepted",
                 },
             ],
-        }).populate("requester receiver");
+        })
+            .populate("requester", "_id name username lastLogin")
+            .populate("receiver", "_id name username lastLogin");
 
         const friends = friendships.map((friendship) =>
             friendship.requester._id.toString() === userID
@@ -49,13 +52,19 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
     if (!req.user) {
         return res.status(401);
     }
-    const { receiverId } = req.body;
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+        return res
+            .status(404)
+            .json({ success: false, message: "username not found" });
+    }
     const userID = req.user.id;
 
     try {
         const existingRequest = await Friendship.findOne({
             requester: userID,
-            receiver: receiverId,
+            receiver: user._id,
             $or: [{ status: "pending" }, { status: "accepted" }],
         });
 
@@ -67,7 +76,7 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
 
         const friendship = new Friendship({
             requester: userID,
-            receiver: receiverId,
+            receiver: user._id,
             status: "pending",
         });
 
@@ -89,9 +98,9 @@ export const getPendingRequests = async (req: UserRequest, res: Response) => {
         const pendingRequests = await Friendship.find({
             receiver: userID,
             status: "pending",
-        }).populate("requester");
+        }).populate("requester", "id name username");
 
-        res.status(200).json(pendingRequests);
+        res.status(200).json({ success: true, pendingRequests });
     } catch (error) {
         console.log("error get pending req", error);
         res.status(500).json({ message: "Internal server error" });
@@ -116,6 +125,76 @@ export const removeFriend = async (req: UserRequest, res: Response) => {
         res.status(200).json({ message: "Friendship removed successfully" });
     } catch (error) {
         console.log("error unfriend: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const acceptFriendRequest = async (req: UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401);
+    }
+    const userID = req.user.id;
+    const { friendshipID, requesterID } = req.body;
+
+    try {
+        const friendship = await Friendship.findOne({
+            _id: friendshipID,
+            receiver: userID,
+            requester: requesterID,
+            status: "pending",
+        });
+
+        if (!friendship) {
+            return res
+                .status(404)
+                .json({ message: "Friend request not found" });
+        }
+
+        friendship.status = "accepted";
+        await friendship.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Friend request accepted",
+            friendship,
+        });
+    } catch (error) {
+        console.log("error accept required ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const rejectFriendRequest = async (req: UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401);
+    }
+    const userID = req.user.id;
+    const { friendshipID, requesterID } = req.body;
+
+    try {
+        const friendship = await Friendship.findOne({
+            _id: friendshipID,
+            receiver: userID,
+            requester: requesterID,
+            status: "pending",
+        });
+
+        if (!friendship) {
+            return res
+                .status(404)
+                .json({ message: "Friend request not found" });
+        }
+
+        friendship.status = "rejected";
+        await friendship.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Friend request rejected",
+            friendship,
+        });
+    } catch (error) {
+        console.log("error reject required ", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
