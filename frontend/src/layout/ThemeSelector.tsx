@@ -58,7 +58,8 @@ function ThemeSelector({ border }: { border: boolean }) {
                     "px-4 py-2 border rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
                 } text-[var(--button-text)] text-sm sm:text-base`}
             >
-                {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                <i className="fa-solid fa-palette"></i>{" "}
+                {theme.charAt(0).toUpperCase() + theme.slice(1)} Theme
             </button>
 
             {/* Modal */}

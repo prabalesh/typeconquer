@@ -94,7 +94,10 @@ function Friendbar() {
                     ></i>
                     <FriendRequestModal
                         isOpen={openFrndReqModal}
-                        onClose={() => setOpenFrndReqModal(false)}
+                        onClose={() => {
+                            setOpenFrndReqModal(false);
+                            fetchPendingRequest();
+                        }}
                     />
                 </div>
                 <div className="relative inline-block">
@@ -115,7 +118,10 @@ function Friendbar() {
                             {openPendingRequest && (
                                 <PendingRequestsModal
                                     pendingRequests={pendingRequests}
-                                    onClose={() => setOpenPendingRequest(false)}
+                                    onClose={() => {
+                                        setOpenPendingRequest(false);
+                                        fetchPendingRequest();
+                                    }}
                                 />
                             )}
                         </div>

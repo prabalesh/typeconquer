@@ -15,3 +15,17 @@ export interface BestWpmResultType {
     bestWPM: number;
     testResultID: string;
 }
+
+export interface ChallengeType {
+    _id: string;
+    challengeData: Date;
+    challengedFriend: string;
+    challenger: {
+        _id: string;
+        name: string;
+        username: string;
+    };
+    createdAt: Date;
+    status: "pending" | "accepted" | "declined" | "completed";
+    typingTestResult: TestResultType;
+}
