@@ -71,7 +71,7 @@ const Header: React.FC = () => {
                                 <div className="flex flex-col gap-2 px-2 py-2 truncate border-bottom">
                                     <div className="">
                                         <p className="text-sm truncate">
-                                            {user.email}
+                                            @{user.email}
                                         </p>
                                     </div>
                                     <div className="cursor-pointer">
