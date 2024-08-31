@@ -5,11 +5,10 @@ import { RootState } from "../app/store";
 import useTimer from "./useTimer";
 import useTypingStats from "./useTypingStats";
 
-const useTypingState = (
-    inputRef: React.RefObject<HTMLInputElement>,
-    timeLimit: number
-) => {
-    const { paragraph } = useSelector((state: RootState) => state.typing);
+const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
+    const { paragraph, timeLimit } = useSelector(
+        (state: RootState) => state.typing
+    );
 
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [startTime, setStartTime] = useState<number | null>(null);
@@ -26,10 +25,8 @@ const useTypingState = (
     const [errorPoints, setErrorPoints] = useState<Set<number>>(new Set());
     const [practiceWords, setPracticeWords] = useState<string[]>([]);
 
-    const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] = useTimer(
-        isTyping,
-        timeLimit
-    );
+    const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] =
+        useTimer(isTyping);
     const [wpm, cpm] = useTypingStats(
         charIndex,
         mistakes,

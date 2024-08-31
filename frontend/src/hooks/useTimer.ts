@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
-const useTimer = (isTyping: boolean, timeLimit: number) => {
+const useTimer = (isTyping: boolean) => {
+    const { timeLimit } = useSelector((state: RootState) => state.typing);
+
     const [timeLeft, setTimeLeft] = useState<number>(timeLimit);
     const [timesUp, setTimesUp] = useState<boolean>(false);
     const [pauseTime, setPauseTime] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTimeLeft(timeLimit);
+    }, [timeLimit]);
 
     useEffect(() => {
         if (timeLeft > 0 && !pauseTime && isTyping) {

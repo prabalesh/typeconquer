@@ -95,6 +95,50 @@ export default function Challenge() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchChallenge = async () => {
+            setLoading(true);
+            const apiURL = `${
+                import.meta.env.VITE_API_URL
+            }/api/challenges/getChallenge`;
+            try {
+                const response = await fetch(apiURL, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ challengeID }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(
+                        errorData.error || "Error fetching challenge"
+                    );
+                }
+
+                const data = await response.json();
+                if (data["success"]) {
+                    setChallenge(data.challenge);
+                }
+            } catch (err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchChallenge();
+    }, [challengeID, dispatch]);
+
+    useEffect(() => {
+        if (challenge) {
+            dispatch(setParagraph(challenge.typingTestResult.text.split("")));
+            dispatch(setTimeLimit(challenge.typingTestResult.duration));
+        }
+    }, [challenge, dispatch]);
+
     const {
         charIndex,
         mistakes,
@@ -107,7 +151,7 @@ export default function Challenge() {
         practiceWords,
         maxCharIndex,
         setTimesUp,
-    } = useTypingState(inputRef, timeLimit);
+    } = useTypingState(inputRef);
 
     const submitResult = useCallback(async () => {
         if (!user.id) return;
@@ -141,11 +185,11 @@ export default function Challenge() {
         }
     }, [
         charIndex,
+        timeLimit,
         errorPoints,
         maxCharIndex,
         mistakes,
         paragraph,
-        timeLimit,
         user.id,
         wpm,
     ]);
@@ -182,48 +226,6 @@ export default function Challenge() {
             console.log(error);
         }
     }, [challengeID, testResult]);
-
-    useEffect(() => {
-        const fetchChallenge = async () => {
-            setLoading(true);
-            const apiURL = `${
-                import.meta.env.VITE_API_URL
-            }/api/challenges/getChallenge`;
-            try {
-                const response = await fetch(apiURL, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ challengeID }),
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(
-                        errorData.error || "Error fetching challenge"
-                    );
-                }
-
-                const data = await response.json();
-                setChallenge(data.challenge);
-            } catch (err) {
-                setError((err as Error).message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchChallenge();
-    }, [challengeID]);
-
-    useEffect(() => {
-        if (challenge) {
-            dispatch(setParagraph(challenge.typingTestResult.text.split("")));
-            dispatch(setTimeLimit(challenge.typingTestResult.duration));
-        }
-    }, [challenge, dispatch]);
 
     const resetChallenge = useCallback(() => {
         setTimesUp(false);
