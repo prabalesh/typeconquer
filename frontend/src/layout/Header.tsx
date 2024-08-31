@@ -4,10 +4,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useLogout } from "../hooks/useLogout";
 import ThemeSelector from "./ThemeSelector";
+import Sidebar from "../components/SideBar";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isSideBarOpen, setIsSiderBarOpen] = useState(false);
     const logout = useLogout();
 
     const handleLogout = () => {
@@ -26,22 +28,32 @@ const Header: React.FC = () => {
                 </h1>
             </Link>
             <div className="flex space-x-2 sm:space-x-4 items-center">
-                {user && user.email ? (
+                {user && user.id ? (
                     <>
-                        <div
-                            className="relative cursor-pointer"
-                            onClick={() => setModalOpen(!isModalOpen)}
-                        >
-                            <img
-                                src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
-                                alt="Profile"
-                                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                        {isSideBarOpen && (
+                            <Sidebar
+                                closeSidebar={() => setIsSiderBarOpen(false)}
                             />
+                        )}
+                        <div className="flex gap-8 items-center">
+                            <div onClick={() => setIsSiderBarOpen(true)}>
+                                <i className="fas fa-users text-xl"></i>
+                            </div>
+                            <div
+                                className="relative cursor-pointer"
+                                onClick={() => setModalOpen(!isModalOpen)}
+                            >
+                                <img
+                                    src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
+                                    alt="Profile"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                />
+                            </div>
                         </div>
 
                         {isModalOpen && (
                             <div
-                                className="flex flex-col gap-2 absolute top-20 right-4 bg-[var(--highlighted-color)] shadow-lg rounded-lg z-50 bordered-1"
+                                className="flex flex-col gap-2 absolute top-20 right-4 bg-[var(--highlighted-color)] shadow-lg rounded-lg z-20 bordered-1"
                                 style={{ minWidth: "250px" }}
                             >
                                 <div className="flex gap-4 p-4 border-bottom items-center">
