@@ -189,6 +189,7 @@ const useTypingState = (
 
     useEffect(() => {
         const inputElement = inputRef.current;
+        const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
         if (inputElement) {
             const handleKeyDown = (e: KeyboardEvent) => {
@@ -199,10 +200,22 @@ const useTypingState = (
                 }
             };
 
+            const handleInput = () => {
+                const value = inputElement.value;
+                const lastChar = value[value.length - 1];
+                handleInputChange(lastChar, false);
+            };
+
             inputElement.addEventListener("keydown", handleKeyDown);
+            if (isMobile) {
+                inputElement.addEventListener("input", handleInput);
+            }
 
             return () => {
                 inputElement.removeEventListener("keydown", handleKeyDown);
+                if (isMobile) {
+                    inputElement.removeEventListener("input", handleInput);
+                }
             };
         }
     }, [
