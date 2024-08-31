@@ -1,3 +1,4 @@
+import Challengebar from "./Challenge/Challengebar";
 import Friendbar from "./Friends/Friendbar";
 
 interface SidebarProps {
@@ -27,88 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
                 </svg>
             </div>
             <Friendbar />
-            <div className="flex-1 p-4 overflow-y-auto">
-                <h2 className="text-xl font-semibold mb-4">Challenges</h2>
-                <ul>
-                    <li className="flex flex-col gap-2">
-                        <div className="flex flex-col gap-2">
-                            <div>Challenge from Arnav</div>
-                            <div className="flex gap-4">
-                                <div>15s</div>
-                                <div>150 WPM</div>
-                            </div>
-                            <div className="flex gap-1">
-                                <button className="bg-[--button-hover] w-2/4 hover:bg-green-600">
-                                    Accept
-                                </button>
-                                <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <div>Challenge from Arnav</div>
-                            <div className="flex gap-4">
-                                <div>15s</div>
-                                <div>150 WPM</div>
-                            </div>
-                            <div className="flex gap-1">
-                                <button className="bg-[--button-hover] w-2/4 hover:bg-green-600">
-                                    Accept
-                                </button>
-                                <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <div>Challenge from Arnav</div>
-                            <div className="flex gap-4">
-                                <div>15s</div>
-                                <div>150 WPM</div>
-                            </div>
-                            <div className="flex gap-1">
-                                <button className="bg-[--button-hover] w-2/4 hover:bg-green-600">
-                                    Accept
-                                </button>
-                                <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <div>Challenge from Arnav</div>
-                            <div className="flex gap-4">
-                                <div>15s</div>
-                                <div>150 WPM</div>
-                            </div>
-                            <div className="flex gap-1">
-                                <button className="bg-[--button-hover] w-2/4 hover:bg-green-600">
-                                    Accept
-                                </button>
-                                <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <div>Challenge from Arnav</div>
-                            <div className="flex gap-4">
-                                <div>15s</div>
-                                <div>150 WPM</div>
-                            </div>
-                            <div className="flex gap-1">
-                                <button className="bg-[--button-hover] w-2/4 hover:bg-green-600">
-                                    Accept
-                                </button>
-                                <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <Challengebar closeSidebar={closeSidebar} />
         </div>
     );
 };
