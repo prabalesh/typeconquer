@@ -1,15 +1,15 @@
+import { useDispatch } from "react-redux";
 import Challengebar from "./Challenge/Challengebar";
 import Friendbar from "./Friends/Friendbar";
+import { siderbarClose } from "../features/sidebar/sidebarsSice";
 
-interface SidebarProps {
-    closeSidebar: () => void;
-}
+const Sidebar: React.FC = () => {
+    const dispatch = useDispatch();
 
-const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
     return (
         <div className="fixed right-0 top-0 w-64 h-screen bg-[--highlighted-color] text-[--highlighted-text] flex flex-col shadow-lg z-50 transition-transform duration-300 md:w-72 lg:w-80">
             <div
-                onClick={closeSidebar}
+                onClick={() => dispatch(siderbarClose())}
                 className="absolute top-4 right-4 cursor-pointer p-2 bg-[--highlighted-color] text-[--highlighted-text] rounded-full hover:bg-[--button-hover] hover:text-[--button-hover-text] flex items-center justify-center"
                 aria-label="Close sidebar"
             >
@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ closeSidebar }) => {
                 </svg>
             </div>
             <Friendbar />
-            <Challengebar closeSidebar={closeSidebar} />
+            <Challengebar />
         </div>
     );
 };
