@@ -1,7 +1,4 @@
-import {
-    BestWpmResultType,
-    TestResultType,
-} from "../../types/TypingResultsTypes";
+import { BestWpmResultType, TestResultType } from "../../types";
 import formatRelativeTime from "../../utils/relativeTime";
 
 function TestResultsItem({

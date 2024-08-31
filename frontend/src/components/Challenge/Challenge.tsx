@@ -1,100 +1,123 @@
+import { useRef, useEffect, useState, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { AppDispatch, RootState } from "../../app/store";
+import { setParagraph, setTimeLimit } from "../../features/typing/typingSlice";
+
+import TypingTestSummary from "../TypingTest/TypingTestSummary";
 import TypingDisplay from "../TypingTest/TypingDisplay";
 import TypingInput from "../TypingTest/TypingInput";
-
-import { useRef, useState, useCallback, useEffect } from "react";
 import TypingStats from "../TypingTest/TypingStats";
+
+import Spinner from "../Spinner";
+import WinnerModal from "./WinnerModal";
+
 import useTypingState from "../../hooks/useTypingState";
 
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../app/store";
+import { TestResultType } from "../../types";
 
-import CongratsModal from "../CongratsModal";
-import TypingTestSummary from "../TypingTest/TypingTestSummary";
-import { setParagraph } from "../../features/typing/typingSlice";
+interface ReqUser {
+    id: string;
+    name: string;
+    username: string;
+}
 
-export default function TypingTest() {
-    const dispatch = useDispatch<AppDispatch>();
-    dispatch(setParagraph("this is testing paragraph".split("")));
+interface TypingTestResult {
+    wpm: number;
+    accuracy: number;
+    text: string;
+    duration: number;
+}
 
+interface Challenge {
+    challenger: ReqUser;
+    challengedFriend: string;
+    typingTestResult: TypingTestResult;
+    status: string;
+}
+
+export interface SubmitChallengeResponse {
+    success: boolean;
+    challenge: {
+        _id: string;
+        challenger: { _id: string; name: string; username: string };
+        challengedFriend: { _id: string; name: string; username: string };
+        typingTestResult: {
+            _id: string;
+            wpm: number;
+            accuracy: number;
+            text: string;
+            duration: number;
+        };
+        friendTestResult?: {
+            _id: string;
+            wpm: number;
+            accuracy: number;
+            text: string;
+            duration: number;
+        };
+        status: "pending" | "accepted" | "declined" | "completed";
+        challengeDate: string;
+        completedDate?: string;
+        winner: { _id: string };
+    };
+}
+
+export interface SubmitChallengeRequest {
+    challengeID: string;
+    friendTestResultID: string;
+}
+
+export default function Challenge() {
+    const user = useSelector((state: RootState) => state.user);
     const { paragraph, timeLimit } = useSelector(
         (state: RootState) => state.typing
     );
-    const user = useSelector((state: RootState) => state.user);
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { challengeID } = useParams();
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const [challenge, setChallenge] = useState<Challenge | null>(null);
+
+    const [testResult, setTestResult] = useState<TestResultType | null>(null);
+    const [submitChallengeResult, setSubmitChallengeResult] =
+        useState<SubmitChallengeResponse | null>(null);
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const [practiceWords, setPracticeWords] = useState<string[]>([]);
+    const [openWinnerModal, setOpenWinnerModal] = useState<boolean>(true);
 
-    const [bestWpm, setBestWpm] = useState<number>(0);
-
-    const [modalOpen, setModalOpen] = useState(true); // for congrats modal
+    const navigate = useNavigate();
 
     const {
         charIndex,
         mistakes,
         isCharCorrectWrong,
-        maxCharIndex,
         errorPoints,
-        highMistakeAlert,
         timeLeft,
         timesUp,
         wpm,
         cpm,
-        isTyping,
-    } = useTypingState(inputRef);
-
-    const findPracticeWords = useCallback(() => {
-        const content = paragraph.slice(0, maxCharIndex + 1).join("");
-        const points = [...errorPoints];
-
-        const words = content.split(" ");
-
-        const filteredWords = words.filter((word, wordIndex) => {
-            const startIdx = content.indexOf(
-                word,
-                wordIndex === 0
-                    ? 0
-                    : content.indexOf(words[wordIndex - 1]) +
-                          words[wordIndex - 1].length +
-                          1
-            );
-            return points.some(
-                (point) => point >= startIdx && point < startIdx + word.length
-            );
-        });
-
-        setPracticeWords(filteredWords);
-    }, [errorPoints, maxCharIndex, paragraph]);
-
-    const fetchBestResult = useCallback(async () => {
-        const apiURL = `${
-            import.meta.env.VITE_API_URL
-        }/api/typingtests/bestresult`;
-        const res = await fetch(apiURL, {
-            method: "GET",
-            credentials: "include",
-        });
-
-        if (res.ok) {
-            const data = await res.json();
-            if (typeof data === "object" && "bestWPM" in data) {
-                if (typeof data["bestWPM"] === "number") {
-                    setBestWpm(data["bestWPM"]);
-                }
-            }
-        }
-    }, []);
+        practiceWords,
+        maxCharIndex,
+        setTimesUp,
+    } = useTypingState(inputRef, timeLimit);
 
     const submitResult = useCallback(async () => {
         if (!user.id) return;
-        if (highMistakeAlert) return;
 
         const apiURL = import.meta.env.VITE_API_URL;
         const accuracy = (
             ((charIndex + 1 - mistakes) / (charIndex + 1)) *
             100
         ).toFixed(2);
-        await fetch(`${apiURL}/api/typingtests/result`, {
+        const res = await fetch(`${apiURL}/api/typingtests/result`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -108,10 +131,17 @@ export default function TypingTest() {
                 text: paragraph.slice(0, maxCharIndex + 1).join(""),
             }),
         });
+
+        if (!res.ok) {
+            throw new Error("Can't submit test result");
+        }
+        const data = await res.json();
+        if (data["success"]) {
+            setTestResult(data["result"]);
+        }
     }, [
         charIndex,
         errorPoints,
-        highMistakeAlert,
         maxCharIndex,
         mistakes,
         paragraph,
@@ -120,18 +150,127 @@ export default function TypingTest() {
         wpm,
     ]);
 
+    const submitChallenge = useCallback(async () => {
+        const apiURL = `${import.meta.env.VITE_API_URL}/api/challenges/submit`;
+        if (!testResult) return;
+        try {
+            const response = await fetch(apiURL, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    challengeID,
+                    friendTestResultID: testResult._id,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data: SubmitChallengeResponse = await response.json();
+
+            if (data["success"]) {
+                console.log(data["challenge"]);
+                setSubmitChallengeResult(data);
+                toast.success("Challenge submitted successfully");
+            }
+        } catch (error) {
+            toast.error("Error submitting challenge");
+            console.log(error);
+        }
+    }, [challengeID, testResult]);
+
+    useEffect(() => {
+        const fetchChallenge = async () => {
+            setLoading(true);
+            const apiURL = `${
+                import.meta.env.VITE_API_URL
+            }/api/challenges/getChallenge`;
+            try {
+                const response = await fetch(apiURL, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ challengeID }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(
+                        errorData.error || "Error fetching challenge"
+                    );
+                }
+
+                const data = await response.json();
+                setChallenge(data.challenge);
+            } catch (err) {
+                setError((err as Error).message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchChallenge();
+    }, [challengeID]);
+
+    useEffect(() => {
+        if (challenge) {
+            dispatch(setParagraph(challenge.typingTestResult.text.split("")));
+            dispatch(setTimeLimit(challenge.typingTestResult.duration));
+        }
+    }, [challenge, dispatch]);
+
+    const resetChallenge = useCallback(() => {
+        setTimesUp(false);
+    }, [setTimesUp]);
+
+    useEffect(() => {
+        resetChallenge();
+    }, [resetChallenge]);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+
     useEffect(() => {
         if (timesUp) {
             submitResult();
-            findPracticeWords();
         }
-    }, [timesUp, findPracticeWords, submitResult]);
+    }, [timesUp, submitResult]);
 
     useEffect(() => {
-        if (isTyping && user.id) {
-            fetchBestResult();
+        if (testResult && timesUp) {
+            submitChallenge();
         }
-    }, [fetchBestResult, isTyping, user.id]);
+    }, [timesUp, testResult, submitChallenge]);
+
+    useEffect(() => {
+        setTestResult(null);
+        setSubmitChallengeResult(null);
+        resetChallenge();
+    }, [resetChallenge]);
+
+    if (loading) {
+        return (
+            <div
+                className="max-w-7xl mx-auto flex justify-center items-center"
+                style={{ minHeight: "80vh" }}
+            >
+                <div>
+                    <Spinner />
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div
@@ -139,42 +278,61 @@ export default function TypingTest() {
                 timesUp && "shake"
             }`}
         >
-            <TypingInput inputRef={inputRef} />
-            {paragraph.length > 0 && (
-                <>
-                    {timesUp &&
-                        user.id &&
-                        bestWpm != 0 &&
-                        !highMistakeAlert &&
-                        bestWpm < wpm && (
-                            <>
-                                <CongratsModal
-                                    isOpen={modalOpen}
-                                    onClose={() => setModalOpen(false)}
-                                    wpm={wpm}
-                                    prevBestWpm={bestWpm}
-                                />
-                            </>
-                        )}
-                    {timesUp ? (
-                        <TypingTestSummary
-                            mistakes={mistakes}
-                            accuracy={(
-                                ((charIndex + 1 - mistakes) / (charIndex + 1)) *
-                                100
-                            ).toFixed(2)}
-                            errorPoints={errorPoints}
-                            practiceWords={practiceWords}
-                        />
-                    ) : (
-                        <TypingDisplay
-                            charIndex={charIndex}
-                            isCharCorrectWrong={isCharCorrectWrong}
-                            inputRef={inputRef}
-                        />
-                    )}
-                </>
+            {challenge && (
+                <div className="text-center my-4">
+                    <div className="font-bold">
+                        <p className="text-2xl">
+                            Challenge from {challenge.challenger.name}
+                        </p>
+                        <p>@{challenge.challenger.username}</p>
+                    </div>
+                    <div>
+                        <p>{challenge.typingTestResult.wpm} WPM</p>
+                        <p>{challenge.typingTestResult.accuracy}% accuracy</p>
+                    </div>
+                </div>
             )}
+            <TypingInput inputRef={inputRef} />
+            {testResult && submitChallengeResult && timesUp && (
+                <WinnerModal
+                    isOpen={openWinnerModal}
+                    onClose={() => {
+                        setOpenWinnerModal(false);
+                        navigate("/");
+                    }}
+                    accurracy={testResult.accuracy}
+                    wpm={testResult.wpm}
+                    challengerWPM={
+                        submitChallengeResult.challenge.typingTestResult.wpm
+                    }
+                    challengerAccuracy={
+                        submitChallengeResult.challenge.typingTestResult
+                            .accuracy
+                    }
+                    defeat={
+                        submitChallengeResult.challenge.winner._id.toString() !=
+                        user.id
+                    }
+                />
+            )}
+            {paragraph.length > 0 &&
+                (timesUp ? (
+                    <TypingTestSummary
+                        mistakes={mistakes}
+                        accuracy={(
+                            ((charIndex + 1 - mistakes) / (charIndex + 1)) *
+                            100
+                        ).toFixed(2)}
+                        errorPoints={errorPoints}
+                        practiceWords={practiceWords}
+                    />
+                ) : (
+                    <TypingDisplay
+                        charIndex={charIndex}
+                        isCharCorrectWrong={isCharCorrectWrong}
+                        inputRef={inputRef}
+                    />
+                ))}
 
             <TypingStats
                 timeLeft={timeLeft}

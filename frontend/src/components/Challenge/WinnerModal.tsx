@@ -1,16 +1,22 @@
-const CongratsModal = ({
+import { useEffect } from "react";
+
+const WinnerModal = ({
     isOpen,
     onClose,
     wpm,
-    prevBestWpm,
+    accurracy,
+    challengerWPM,
+    challengerAccuracy,
+    defeat,
 }: {
     isOpen: boolean;
     onClose: () => void;
     wpm: number;
-    prevBestWpm: number;
+    accurracy: number;
+    challengerWPM: number;
+    challengerAccuracy: number;
+    defeat: boolean;
 }) => {
-    if (!isOpen) return null;
-
     const createConfetti = () => {
         const confettiContainer = document.createElement("div");
         confettiContainer.classList.add("confetti");
@@ -37,20 +43,33 @@ const CongratsModal = ({
         }, 5000);
     };
 
-    createConfetti();
+    useEffect(() => {
+        if (!defeat) createConfetti();
+    });
+
+    if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-25">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
             <div
-                className="fixed inset-0 bg-black opacity-50 backdrop-blur-md"
+                className="fixed inset-0 bg-black opacity-50 backdrop-blur-lg"
                 onClick={onClose}
             />
             <div className="p-8 rounded-lg shadow-lg text-center animated-border shake bg-[var(--bg-color)] relative z-10">
-                <h2 className="text-2xl font-bold mb-4">Congratulations!</h2>
-                <p className="text-lg">
-                    You've achieved the best WPM of {wpm}!
+                <h2 className="text-2xl font-bold mb-4">
+                    {defeat ? (
+                        <p className="text-red-500">Defeated 😔</p>
+                    ) : (
+                        <p className="text-green-500">Congratulations!</p>
+                    )}
+                </h2>
+                <p>
+                    Your WPM: {wpm}, Your accuracy: {accurracy}
                 </p>
-                <p>Previous best: {prevBestWpm} wpm</p>
+                <p>
+                    Challenger's WPM: {challengerWPM}, Challenger's accuracy:{" "}
+                    {challengerAccuracy}%
+                </p>
                 <button
                     className="my-4 py-2 px-4 sm:py-2 sm:px-6 border shadow-md rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
                     onClick={onClose}
@@ -62,4 +81,4 @@ const CongratsModal = ({
     );
 };
 
-export default CongratsModal;
+export default WinnerModal;

@@ -254,6 +254,22 @@ const useTypingState = (
         }
     }, [highMistakeAlert, inputRef, setPauseTime, setTimesUp]);
 
+    const resetTypingState = useCallback(() => {
+        setIsTyping(false);
+        setStartTime(null);
+        setCharIndex(0);
+        setCharIndexAfterSpace(0);
+        setMaxCharIndex(0);
+        setMistakes(0);
+        setHighMistakeAlert(false);
+        setIsCharCorrectWrong([]);
+        setErrorPoints(new Set());
+        setPracticeWords([]);
+        setTimeLeft(timeLimit);
+        setTimesUp(false);
+        setPauseTime(false);
+    }, [timeLimit, setPauseTime, setTimeLeft, setTimesUp]);
+
     return {
         charIndex,
         mistakes,
@@ -271,6 +287,7 @@ const useTypingState = (
         isTyping,
         setIsTyping,
         practiceWords,
+        resetTypingState,
     };
 };
 

@@ -13,6 +13,8 @@ import CongratsModal from "../CongratsModal";
 import TypingTestSummary from "./TypingTestSummary";
 
 import { setParagraph } from "../../features/typing/typingSlice";
+import { TestResultType } from "../../types";
+import FriendListModal from "../Friends/FriendListModal";
 
 export default function TypingTest({
     handleGenerateParagraph,
@@ -31,6 +33,8 @@ export default function TypingTest({
     const [bestWpm, setBestWpm] = useState<number>(0);
 
     const [modalOpen, setModalOpen] = useState(true); // for congrats modal
+
+    const [openFriendsModal, setOpenFriendsModal] = useState<boolean>(false);
 
     const {
         charIndex,
@@ -56,6 +60,7 @@ export default function TypingTest({
         setIsTyping(false);
         setStartTime(null);
         setTimesUp(false);
+        setTestResult(null);
         inputRef.current?.focus();
         if (resetGameFlag) {
             handleGenerateParagraph();
@@ -69,6 +74,8 @@ export default function TypingTest({
         resetGameFlag,
         handleGenerateParagraph,
     ]);
+
+    const [testResult, setTestResult] = useState<TestResultType | null>(null);
 
     const fetchBestResult = useCallback(async () => {
         const apiURL = `${
@@ -98,7 +105,7 @@ export default function TypingTest({
             ((charIndex + 1 - mistakes) / (charIndex + 1)) *
             100
         ).toFixed(2);
-        await fetch(`${apiURL}/api/typingtests/result`, {
+        const res = await fetch(`${apiURL}/api/typingtests/result`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -112,6 +119,14 @@ export default function TypingTest({
                 text: paragraph.slice(0, maxCharIndex + 1).join(""),
             }),
         });
+
+        if (!res.ok) {
+            throw new Error("Can't submit test result");
+        }
+        const data = await res.json();
+        if (data["success"]) {
+            setTestResult(data["result"]);
+        }
     }, [
         charIndex,
         errorPoints,
@@ -222,15 +237,37 @@ export default function TypingTest({
                             </>
                         )}
                     {timesUp ? (
-                        <TypingTestSummary
-                            mistakes={mistakes}
-                            accuracy={(
-                                ((charIndex + 1 - mistakes) / (charIndex + 1)) *
-                                100
-                            ).toFixed(2)}
-                            errorPoints={errorPoints}
-                            practiceWords={practiceWords}
-                        />
+                        <>
+                            <TypingTestSummary
+                                mistakes={mistakes}
+                                accuracy={(
+                                    ((charIndex + 1 - mistakes) /
+                                        (charIndex + 1)) *
+                                    100
+                                ).toFixed(2)}
+                                errorPoints={errorPoints}
+                                practiceWords={practiceWords}
+                            />
+                            {testResult && (
+                                <>
+                                    <button
+                                        onClick={() =>
+                                            setOpenFriendsModal(true)
+                                        }
+                                        className="my-2 bordered px-4 py-2 rounded-3xl hover:bg-[--button-hover] hover:text-[--button-hover-text]"
+                                    >
+                                        Challenge a friend?
+                                    </button>
+                                    <FriendListModal
+                                        isOpen={openFriendsModal}
+                                        closeModal={() =>
+                                            setOpenFriendsModal(false)
+                                        }
+                                        typingTestID={testResult._id.toString()}
+                                    />
+                                </>
+                            )}
+                        </>
                     ) : (
                         <TypingDisplay
                             charIndex={charIndex}

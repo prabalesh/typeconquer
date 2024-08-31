@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import TestResultsItem from "../components/TypingTestResults/TestResultsItem";
 
-import { TestResultType, BestWpmResultType } from "../types/TypingResultsTypes";
+import { TestResultType, BestWpmResultType } from "../types";
 
 function TypingTestResults() {
     const user = useSelector((state: RootState) => state.user);
