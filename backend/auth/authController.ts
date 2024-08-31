@@ -26,16 +26,18 @@ interface JwtPayload {
     email: string;
 }
 
-export const authenticateUser = (req: UserRequest, res: Response) => {
+export const authenticateUser = async (req: UserRequest, res: Response) => {
     try {
         if (!req.user) {
             return res.status(401);
             // .json({ success: false, message: "Unauthorized" });
         }
 
+        const user = await User.findById(req.user.id);
+
         res.json({
             id: req.user.id,
-            email: req.user.email,
+            email: user?.username || req.user.email,
             name: req.user.name,
         });
     } catch (err) {
