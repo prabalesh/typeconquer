@@ -41,6 +41,35 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         }
     }, [charIndex, mistakes]);
 
+    const findPracticeWords = useCallback(() => {
+        const content = paragraph.slice(0, maxCharIndex + 1).join("");
+        const points = [...errorPoints];
+
+        const words = content.split(" ");
+
+        const filteredWords = words.filter((word, wordIndex) => {
+            const startIdx = content.indexOf(
+                word,
+                wordIndex === 0
+                    ? 0
+                    : content.indexOf(words[wordIndex - 1]) +
+                          words[wordIndex - 1].length +
+                          1
+            );
+            return points.some(
+                (point) => point >= startIdx && point < startIdx + word.length
+            );
+        });
+
+        setPracticeWords(filteredWords);
+    }, [errorPoints, maxCharIndex, paragraph]);
+
+    useEffect(() => {
+        if (timesUp) {
+            findPracticeWords();
+        }
+    }, [timesUp, findPracticeWords]);
+
     const handleCtrlBackspace = useCallback(() => {
         if (charIndex != charIndexAfterSpace) {
             setIsCharCorrectWrong((prevState) => {
@@ -155,56 +184,35 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         ]
     );
 
-    const findPracticeWords = useCallback(() => {
-        const content = paragraph.slice(0, maxCharIndex + 1).join("");
-        const points = [...errorPoints];
-
-        const words = content.split(" ");
-
-        const filteredWords = words.filter((word, wordIndex) => {
-            const startIdx = content.indexOf(
-                word,
-                wordIndex === 0
-                    ? 0
-                    : content.indexOf(words[wordIndex - 1]) +
-                          words[wordIndex - 1].length +
-                          1
-            );
-            return points.some(
-                (point) => point >= startIdx && point < startIdx + word.length
-            );
-        });
-
-        setPracticeWords(filteredWords);
-    }, [errorPoints, maxCharIndex, paragraph]);
-
-    useEffect(() => {
-        if (timesUp) {
-            findPracticeWords();
-        }
-    }, [timesUp, findPracticeWords]);
-
     useEffect(() => {
         const inputElement = inputRef.current;
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        let previousValue = "";
 
         if (inputElement) {
             const handleKeyDown = (e: KeyboardEvent) => {
                 handleInputChange(e.key, e.ctrlKey);
-                // Blur input on Escape
+
                 if (e.key === "Escape") {
                     inputElement.blur();
                 }
             };
 
             const handleInput = () => {
-                const value = inputElement.value;
-                const lastChar = value[value.length - 1];
-                handleInputChange(lastChar, false);
+                const currentValue = inputElement.value;
+
+                if (previousValue.length > currentValue.length) {
+                    handleInputChange("Backspace", false);
+                } else {
+                    const lastChar = currentValue[currentValue.length - 1];
+                    handleInputChange(lastChar, false);
+                }
+                previousValue = currentValue;
             };
 
             inputElement.addEventListener("keydown", handleKeyDown);
             if (isMobile) {
+                previousValue = inputElement.value;
                 inputElement.addEventListener("input", handleInput);
             }
 
