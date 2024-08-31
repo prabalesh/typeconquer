@@ -59,7 +59,13 @@ function Challengebar({ closeSidebar }: { closeSidebar: () => void }) {
 
     return (
         <div className="flex-1 p-4 overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4">Challenges</h2>
+            <div className="text-xl font-semibold mb-4">
+                <span>Challenges </span>
+                <i
+                    className="fa-solid fa-rotate-right"
+                    onClick={() => fetchPendingChallenges()}
+                ></i>
+            </div>
             {isLoading ? (
                 <Spinner />
             ) : (
