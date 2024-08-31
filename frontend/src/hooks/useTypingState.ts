@@ -187,22 +187,28 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
     useEffect(() => {
         const inputElement = inputRef.current;
         const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+        let previousValue = inputElement ? inputElement.value : "";
 
         if (inputElement) {
             const handleKeyDown = (e: KeyboardEvent) => {
                 handleInputChange(e.key, e.ctrlKey);
-
+                // Blur input on Escape
                 if (e.key === "Escape") {
                     inputElement.blur();
                 }
             };
 
             const handleInput = () => {
-                if (charIndex > inputElement.value.length) {
+                const currentValue = inputElement.value;
+
+                if (currentValue.length < previousValue.length) {
                     handleInputChange("Backspace", false);
                 } else {
-                    handleInputChange(inputElement.value[-1], false);
+                    const lastChar = currentValue[currentValue.length - 1];
+                    handleInputChange(lastChar, false);
                 }
+
+                previousValue = currentValue;
             };
 
             inputElement.addEventListener("keydown", handleKeyDown);
