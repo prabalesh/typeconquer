@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import { Routes, Route } from "react-router-dom";
 import TypingTestResults from "./pages/TypingTestResults";
+import Challenge from "./components/Challenge/Challenge";
 
 function App() {
     const dispatch = useDispatch();
@@ -63,6 +64,10 @@ function App() {
                     <Route
                         path="/typingtest/results"
                         element={<TypingTestResults />}
+                    />
+                    <Route
+                        path="/challenge/:challengeID"
+                        element={<Challenge />}
                     />
 
                     <Route path="*" element={<NotFound />} />
