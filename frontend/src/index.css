@@ -24,6 +24,7 @@
     --heading-color: #2d3748;
     --border-color: #333;
     --highlighted-color: #fdfdfd;
+    --highlighted-text: #1a1a1a;
 }
 
 .theme-dark {
@@ -36,7 +37,8 @@
     --button-hover-text: #fff;
     --heading-color: #e2e8f0;
     --border-color: #6a89cc;
-    --highlighted-color: #2a2a2a;
+    --highlighted-color: rgb(31 41 55);
+    --highlighted-text: #fff;
 }
 
 .theme-purple {
@@ -49,7 +51,8 @@
     --button-hover-text: #1a1a1a;
     --heading-color: #bb86fc;
     --border-color: #bb86fc;
-    --highlighted-color: #2a2a2a;
+    --highlighted-color: rgb(31 41 55);
+    --highlighted-text: #fff;
 }
 
 body {
