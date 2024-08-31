@@ -124,7 +124,10 @@ function Friendbar() {
                 <div>
                     <i
                         className="fa-solid fa-rotate-right"
-                        onClick={() => fetchFriendList()}
+                        onClick={() => {
+                            fetchFriendList();
+                            fetchPendingRequest();
+                        }}
                     ></i>
                 </div>
             </div>
@@ -145,12 +148,17 @@ function Friendbar() {
                                             key={i}
                                             className="w-full p-2 hover:bg-[--button-hover] hover:text-[--button-hover-text] border"
                                         >
-                                            <div className="flex justify-between">
-                                                <div>
+                                            <div className="flex gap-2">
+                                                <img
+                                                    src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
+                                                    alt="Profile"
+                                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                                />
+                                                <div className="text-xs truncate">
                                                     <p>{friend.name}</p>
                                                     <p>@{friend.username}</p>
                                                 </div>
-                                                <div className="text-xs">
+                                                <div className="text-xs truncate">
                                                     {formatRelativeTime(
                                                         friend.lastLogin
                                                     )}

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import Spinner from "../Spinner";
 import { TestResultType } from "../../types";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { siderbarClose } from "../../features/sidebar/sidebarsSice";
+import formatRelativeTime from "../../utils/relativeTime";
 
 interface ChalleneType {
     _id: string;
@@ -17,7 +20,9 @@ interface ChalleneType {
     typingTestResult: TestResultType;
 }
 
-function Challengebar({ closeSidebar }: { closeSidebar: () => void }) {
+function Challengebar() {
+    const dispatch = useDispatch();
+
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState<string | null>(null);
 
@@ -78,7 +83,7 @@ function Challengebar({ closeSidebar }: { closeSidebar: () => void }) {
                                 <ul className="flex flex-col gap-2">
                                     {pendingChallenges.map((challenge, i) => (
                                         <li
-                                            className="flex flex-col gap-2 bordered p-2"
+                                            className="flex flex-col gap-2 bordered p-2 text-sm text-center"
                                             key={i}
                                         >
                                             <div className="flex flex-col gap-2">
@@ -98,7 +103,7 @@ function Challengebar({ closeSidebar }: { closeSidebar: () => void }) {
                                                         }
                                                     </p>
                                                 </div>
-                                                <div className="flex gap-4">
+                                                <div className="flex gap-4 justify-around">
                                                     <div>
                                                         {
                                                             challenge
@@ -124,11 +129,18 @@ function Challengebar({ closeSidebar }: { closeSidebar: () => void }) {
                                                         % Accuracy
                                                     </div>
                                                 </div>
+                                                <div className="text-center">
+                                                    {formatRelativeTime(
+                                                        challenge.createdAt
+                                                    )}
+                                                </div>
                                                 <div className="flex gap-1">
                                                     <Link
                                                         to={`/challenge/${challenge._id}`}
                                                         onClick={() =>
-                                                            closeSidebar()
+                                                            dispatch(
+                                                                siderbarClose()
+                                                            )
                                                         }
                                                         className="inline-block text-center bg-[--button-hover] w-2/4 hover:bg-green-600"
                                                     >

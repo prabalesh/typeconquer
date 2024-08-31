@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useLogout } from "../hooks/useLogout";
 import ThemeSelector from "./ThemeSelector";
 import Sidebar from "../components/SideBar";
+import { siderbarOpen } from "../features/sidebar/sidebarsSice";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [isSideBarOpen, setIsSiderBarOpen] = useState(false);
     const logout = useLogout();
 
     const handleLogout = () => {
         logout();
         setModalOpen(false);
     };
+
+    const { isSidebarOpen } = useSelector((state: RootState) => state.sidebar);
+    const dispatch = useDispatch();
 
     return (
         <header
@@ -30,13 +33,9 @@ const Header: React.FC = () => {
             <div className="flex space-x-2 sm:space-x-4 items-center">
                 {user && user.id ? (
                     <>
-                        {isSideBarOpen && (
-                            <Sidebar
-                                closeSidebar={() => setIsSiderBarOpen(false)}
-                            />
-                        )}
+                        {isSidebarOpen && <Sidebar />}
                         <div className="flex gap-8 items-center">
-                            <div onClick={() => setIsSiderBarOpen(true)}>
+                            <div onClick={() => dispatch(siderbarOpen())}>
                                 <i className="fas fa-users text-xl"></i>
                             </div>
                             <div
@@ -54,7 +53,7 @@ const Header: React.FC = () => {
                         {isModalOpen && (
                             <div
                                 className="flex flex-col gap-2 absolute top-20 right-4 bg-[var(--highlighted-color)] shadow-lg rounded-lg z-20 bordered-1"
-                                style={{ minWidth: "250px" }}
+                                style={{ minWidth: "250px", maxWidth: "300px" }}
                             >
                                 <div className="flex gap-4 p-4 border-bottom items-center">
                                     <img
@@ -66,14 +65,10 @@ const Header: React.FC = () => {
                                         <p className="text-sm font-semibold truncate">
                                             {user.name}
                                         </p>
+                                        <p>@{user.email}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2 px-2 py-2 truncate border-bottom">
-                                    <div className="">
-                                        <p className="text-sm truncate">
-                                            @{user.email}
-                                        </p>
-                                    </div>
                                     <div className="cursor-pointer">
                                         <Link to={"/typingtest/results"}>
                                             Test Results
