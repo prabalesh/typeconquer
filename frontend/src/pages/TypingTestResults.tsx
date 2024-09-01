@@ -100,7 +100,7 @@ function TypingTestResults() {
     };
 
     return (
-        <div className="mx-auto p-4">
+        <div className="mx-auto p-4 max-w-7xl">
             {user.id ? (
                 <>
                     {isLoading ? (
