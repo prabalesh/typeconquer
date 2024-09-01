@@ -192,7 +192,6 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         if (inputElement) {
             const handleKeyDown = (e: KeyboardEvent) => {
                 handleInputChange(e.key, e.ctrlKey);
-                // Blur input on Escape
                 if (e.key === "Escape") {
                     inputElement.blur();
                 }
@@ -200,11 +199,14 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
 
             const handleInput = () => {
                 const currentValue = inputElement.value;
+                console.log("current value:", currentValue);
 
                 if (currentValue.length < previousValue.length) {
+                    console.log("baskspace");
                     handleInputChange("Backspace", false);
                 } else {
                     const lastChar = currentValue[currentValue.length - 1];
+                    console.log("Last char: " + lastChar);
                     handleInputChange(lastChar, false);
                 }
 

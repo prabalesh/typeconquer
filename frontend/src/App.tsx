@@ -15,7 +15,7 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const fetchUserData = async (retryCount = 3) => {
+        const fetchUserData = async (retryCount = 5) => {
             try {
                 const response = await fetch(
                     `${import.meta.env.VITE_API_URL}/api/auth/user`,

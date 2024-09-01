@@ -55,6 +55,7 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
     }
     const { username } = req.body;
     const user = await User.findOne({ username });
+
     if (!user) {
         return res
             .status(404)
@@ -89,6 +90,7 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
         });
 
         await friendship.save();
+
         res.status(201).json({
             success: true,
             message: "Friend request send successfully",
