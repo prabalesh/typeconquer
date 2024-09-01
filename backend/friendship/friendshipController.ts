@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Friendship from "./FriendshipModel";
 import User from "../auth/UserModel";
+import Notification from "../notifications/notificationModel";
 
 interface UserPayload {
     id: string;
@@ -197,6 +198,13 @@ export const rejectFriendRequest = async (req: UserRequest, res: Response) => {
 
         friendship.status = "rejected";
         await friendship.save();
+
+        await Notification.create({
+            user: requesterID,
+            type: "friend_request",
+            message: `Your friend request to ${req.user.name} has been rejected.`,
+            read: false,
+        });
 
         res.status(200).json({
             success: true,

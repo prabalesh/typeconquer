@@ -46,7 +46,10 @@ function NotificationPanel({
     };
 
     return (
-        <div className="p-2 absolute right-0 top-10 mt-2 w-[25vw] max-h-[40vh] bg-[var(--highlighted-color)] shadow-lg rounded-lg z-20 overflow-y-auto">
+        <div
+            className="p-2 absolute right-0 top-10 mt-2 w-[25vw] max-h-[40vh] bg-[var(--highlighted-color)] shadow-lg rounded-lg z-20 overflow-y-auto"
+            style={{ minWidth: "250px", minHeight: "200px" }}
+        >
             <h4 className="text-lg font-semibold mb-2 text-center">
                 Notifications
             </h4>

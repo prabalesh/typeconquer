@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Challenge, { IChallenge } from "./ChallengeModel";
 import TypingTestResult from "../typingtests/TestResultModel";
 import Friendship from "../friendship/FriendshipModel";
+import Notification from "../notifications/notificationModel";
 
 interface UserPayload {
     id: string;
@@ -241,5 +242,53 @@ export const submitChallenge = async (req: UserRequest, res: Response) => {
         return res
             .status(500)
             .json({ error: "Server error while submitting the challenge" });
+    }
+};
+
+export const rejectChallenge = async (req: UserRequest, res: Response) => {
+    if (!req.user) {
+        return res.status(401);
+    }
+
+    const userID = req.user.id;
+
+    try {
+        const { challengeID } = req.body;
+
+        if (!challengeID) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Challenge ID is required." });
+        }
+
+        const challenge = await Challenge.findOne({
+            _id: challengeID,
+            challenger: userID,
+            status: "pending",
+        });
+        if (!challenge) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Challenge not found." });
+        }
+        challenge.status = "declined";
+        await challenge.save();
+
+        await Notification.create({
+            user: challenge.challenger,
+            type: "challenge",
+            message: `Your challenge request has been declined by ${req.user.name}`,
+            read: false,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Challenged declined successfully",
+        });
+    } catch (error) {
+        console.log("error reject challenge: ", error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Internal server error." });
     }
 };
