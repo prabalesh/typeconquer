@@ -94,6 +94,7 @@ export const getPendingChallenges = async (req: UserRequest, res: Response) => {
             challengedFriend: userID,
             status: "pending",
         })
+            .sort({ challengeDate: -1 })
             .populate("challenger", "name username")
             .populate("typingTestResult", "wpm accuracy duration");
 
@@ -110,6 +111,7 @@ export const getChallenge = async (req: UserRequest, res: Response) => {
     if (!req.user) {
         return res.status(401);
     }
+
     try {
         const { challengeID } = req.body;
         const userID = req.user.id;
