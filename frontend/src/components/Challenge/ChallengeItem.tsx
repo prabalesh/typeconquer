@@ -9,7 +9,7 @@ function ChallengeItem({ challenge }: { challenge: ChallengeType }) {
     const dispatch = useDispatch();
     return (
         <li
-            className="flex flex-col gap-2 bordered p-2 text-sm text-center"
+            className="flex flex-col gap-2 bordered rounded-xl p-2 text-sm text-center"
             key={challenge._id}
         >
             <div className="flex flex-col gap-2">

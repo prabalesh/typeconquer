@@ -85,7 +85,7 @@ function Friendbar() {
     }, []);
 
     return (
-        <div className="flex-1 p-4 border-b border-gray-600 overflow-y-auto">
+        <div className=" flex-1 p-4 border-b border-gray-600 overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">Friends</h2>
             <div className="my-2 flex gap-4">
                 <div>
@@ -145,11 +145,15 @@ function Friendbar() {
                 </div>
             </div>
             {friendlistLoading ? (
-                <Spinner />
+                <div className="h-full relative">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-2/3">
+                        <Spinner />
+                    </div>
+                </div>
             ) : (
                 <>
                     {errorFriendList ? (
-                        <div className="flex justify-center items-center">
+                        <div className="flex justify-center items-center text-red-500">
                             <p>{errorFriendList}</p>
                         </div>
                     ) : (
@@ -159,17 +163,21 @@ function Friendbar() {
                                     {friendList.map((friend, i) => (
                                         <li
                                             key={i}
-                                            className="w-full p-2 hover:bg-[--button-hover] hover:text-[--button-hover-text] border"
+                                            className="w-full p-2 rounded-xl hover:bg-[--button-hover] hover:text-[--button-hover-text] border"
                                         >
-                                            <div className="flex gap-2">
-                                                <img
-                                                    src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
-                                                    alt="Profile"
-                                                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                                                />
-                                                <div className="text-xs truncate">
-                                                    <p>{friend.name}</p>
-                                                    <p>@{friend.username}</p>
+                                            <div className="flex justify-between text-xs">
+                                                <div className="flex gap-2">
+                                                    <img
+                                                        src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
+                                                        alt="Profile"
+                                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                                    />
+                                                    <div className="text-xs truncate">
+                                                        <p>{friend.name}</p>
+                                                        <p>
+                                                            @{friend.username}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                                 <div className="text-xs truncate">
                                                     {formatRelativeTime(

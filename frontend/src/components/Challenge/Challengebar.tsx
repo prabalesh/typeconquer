@@ -44,7 +44,7 @@ const Challengebar: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex-1 p-4 overflow-y-auto">
+        <div className="relative flex-1 p-4 overflow-y-auto">
             <div className="text-xl font-semibold mb-4">
                 <span>Challenges </span>
                 <i
@@ -53,7 +53,9 @@ const Challengebar: React.FC = () => {
                 ></i>
             </div>
             {isLoading ? (
-                <Spinner />
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <Spinner />
+                </div>
             ) : errors ? (
                 <p>{errors}</p>
             ) : (
