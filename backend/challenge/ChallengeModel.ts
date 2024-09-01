@@ -1,4 +1,6 @@
 import mongoose, { Document, Types } from "mongoose";
+import Notification from "../notifications/notificationModel";
+import User from "../auth/UserModel";
 
 export interface IChallenge extends Document {
     challenger: Types.ObjectId;
@@ -67,6 +69,13 @@ challengeSchema.methods.determineWinner = async function () {
         );
     }
 
+    const challenger = await User.findById(this.challenger);
+    const challengedFriend = await User.findById(this.challengedFriend);
+
+    if (!challenger || !challengedFriend) {
+        throw new Error("Challenger or challenged friend not found.");
+    }
+
     if (friendTestResult.wpm > challengerTestResult.wpm) {
         this.winner = this.challengedFriend;
     } else if (friendTestResult.wpm < challengerTestResult.wpm) {
@@ -83,6 +92,23 @@ challengeSchema.methods.determineWinner = async function () {
     this.completedDate = new Date();
 
     await this.save();
+
+    await Notification.create({
+        user: this.challenger,
+        type: "challenge",
+        message: `Challenge completed! ${
+            this.winner.equals(this.challenger)
+                ? `Congratulations ${challenger.name}, you won!`
+                : `${challengedFriend.name} won the challenge!`
+        } Results:
+        ${challenger.name}'s WPM: ${challengerTestResult.wpm}, Accuracy: ${
+            challengerTestResult.accuracy
+        }%
+        ${challengedFriend.name}'s WPM: ${friendTestResult.wpm}, Accuracy: ${
+            friendTestResult.accuracy
+        }%`,
+        read: false,
+    });
 };
 
 export default mongoose.model("Challenge", challengeSchema);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
@@ -6,10 +6,14 @@ import { useLogout } from "../hooks/useLogout";
 import ThemeSelector from "./ThemeSelector";
 import Sidebar from "../components/SideBar";
 import { siderbarOpen } from "../features/sidebar/sidebarsSice";
+import { NotificationType } from "../types";
+import NotificationPanel from "../components/NotificationPanel";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isNotificationOpen, setNotificationOpen] = useState(false);
+    const [notifications, setNotifications] = useState<NotificationType[]>([]);
     const logout = useLogout();
 
     const handleLogout = () => {
@@ -19,6 +23,34 @@ const Header: React.FC = () => {
 
     const { isSidebarOpen } = useSelector((state: RootState) => state.sidebar);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (!user.id) return;
+        const fetchNotifications = async () => {
+            const apiURL = `${import.meta.env.VITE_API_URL}/api/notifications`;
+            try {
+                const res = await fetch(apiURL, {
+                    method: "GET",
+                    credentials: "include",
+                });
+
+                const data = await res.json();
+                if (data["success"]) {
+                    setNotifications(data["notifications"]);
+                } else {
+                    console.log(
+                        "error occured fetching notifications: ",
+                        data["message"]
+                    );
+                }
+            } catch {
+                console.log("Failed to fetch notification");
+            }
+        };
+        if (!isNotificationOpen) fetchNotifications();
+    }, [user, isNotificationOpen]);
+
+    const unreadNotifications = notifications.filter((n) => !n.read).length;
 
     return (
         <header
@@ -35,6 +67,27 @@ const Header: React.FC = () => {
                     <>
                         {isSidebarOpen && <Sidebar />}
                         <div className="flex gap-8 items-center">
+                            <div className="relative cursor-pointer">
+                                <div
+                                    className="text-xl"
+                                    onClick={() =>
+                                        setNotificationOpen(!isNotificationOpen)
+                                    }
+                                >
+                                    <i className="fa-solid fa-bell"></i>
+                                    {unreadNotifications > 0 && (
+                                        <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                                            {unreadNotifications}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {isNotificationOpen && (
+                                    <NotificationPanel
+                                        notifications={notifications}
+                                    />
+                                )}
+                            </div>
                             <div onClick={() => dispatch(siderbarOpen())}>
                                 <i className="fas fa-users text-xl"></i>
                             </div>

@@ -36,3 +36,12 @@ export interface StatusType {
     isFailure: boolean | null;
     isSuccess: boolean | null;
 }
+
+export type NotificationType = {
+    _id: string;
+    user: string;
+    type: "challenge" | "friend_request" | "test_result" | "general";
+    message: string;
+    read: boolean;
+    createdAt: Date;
+};
