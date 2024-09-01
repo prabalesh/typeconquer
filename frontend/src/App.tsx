@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
 import { Routes, Route } from "react-router-dom";
 import TypingTestResults from "./pages/TypingTestResults";
-import Challenge from "./components/Challenge/Challenge";
+import Challenge from "./pages/Challenge";
 
 function App() {
     const dispatch = useDispatch();

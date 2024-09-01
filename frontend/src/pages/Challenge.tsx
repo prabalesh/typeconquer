@@ -3,21 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { AppDispatch, RootState } from "../../app/store";
-import { setParagraph, setTimeLimit } from "../../features/typing/typingSlice";
+import { AppDispatch, RootState } from "../app/store";
+import { setParagraph, setTimeLimit } from "../features/typing/typingSlice";
 
-import TypingTestSummary from "../TypingTest/TypingTestSummary";
-import TypingDisplay from "../TypingTest/TypingDisplay";
-import TypingInput from "../TypingTest/TypingInput";
-import TypingStats from "../TypingTest/TypingStats";
+import TypingTestSummary from "../components/TypingTest/TypingTestSummary";
+import TypingDisplay from "../components/TypingTest/TypingDisplay";
+import TypingInput from "../components/TypingTest/TypingInput";
+import TypingStats from "../components/TypingTest/TypingStats";
 
-import Spinner from "../Spinner";
-import WinnerModal from "./WinnerModal";
+import Spinner from "../components/Spinner";
+import WinnerModal from "../components/Challenge/WinnerModal";
 
-import useTypingState from "../../hooks/useTypingState";
+import useTypingState from "../hooks/useTypingState";
 
-import { StatusType, TestResultType } from "../../types";
-import StatusModal from "./StatusModal";
+import { StatusType, TestResultType } from "../types";
+import StatusModal from "../components/Challenge/StatusModal";
 
 interface ReqUser {
     id: string;

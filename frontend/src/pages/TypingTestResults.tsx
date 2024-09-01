@@ -100,7 +100,7 @@ function TypingTestResults() {
     };
 
     return (
-        <div className="mx-auto p-4 max-w-7xl">
+        <div className="mx-auto p-4 lg:w-[50vw] md:w-[60vw] sm:[95vw]">
             {user.id ? (
                 <>
                     {isLoading ? (
@@ -125,7 +125,7 @@ function TypingTestResults() {
                                         <>
                                             {bestWpmResult?.bestWPM != 0 && (
                                                 <div className="animated-border p-4">
-                                                    <p className="text-xl md:text-2xl font-bold">
+                                                    <p className="text-xl md:text-2xl font-bold text-center">
                                                         ALL TIME BEST WPM:{" "}
                                                         {bestWpmResult?.bestWPM}
                                                     </p>
