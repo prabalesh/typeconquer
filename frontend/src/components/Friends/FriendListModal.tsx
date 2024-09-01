@@ -182,9 +182,12 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                                                     Challenge
                                                 </button>
                                             ) : (
-                                                <div className="order px-4 py-1 border-[--border-color] rounded bg-[--button-hover] text-[--button-hover-text]">
+                                                <button
+                                                    disabled
+                                                    className="order px-4 py-1 border-[--border-color] rounded bg-[--button-hover] text-[--button-hover-text]"
+                                                >
                                                     Challenged
-                                                </div>
+                                                </button>
                                             )}
                                         </div>
                                     </div>

@@ -204,7 +204,11 @@ function TypingDisplay({
                 return (
                     <div
                         key={lno}
-                        className={`flex ${!isMobile && textAlign}`}
+                        className={`flex ${
+                            !isMobile &&
+                            paragraph.length - charIndex > 60 &&
+                            textAlign
+                        }`}
                         style={{ whiteSpace: "pre-wrap", textAlign: "justify" }}
                     >
                         {line.split("").map((char, i) => {
