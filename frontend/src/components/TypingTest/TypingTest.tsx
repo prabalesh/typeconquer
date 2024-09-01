@@ -13,8 +13,9 @@ import CongratsModal from "../CongratsModal";
 import TypingTestSummary from "./TypingTestSummary";
 
 import { setParagraph } from "../../features/typing/typingSlice";
-import { TestResultType } from "../../types";
+import { StatusType, TestResultType } from "../../types";
 import FriendListModal from "../Friends/FriendListModal";
+import StatusModal from "../Challenge/StatusModal";
 
 export default function TypingTest({
     handleGenerateParagraph,
@@ -35,6 +36,14 @@ export default function TypingTest({
     const [modalOpen, setModalOpen] = useState(true); // for congrats modal
 
     const [openFriendsModal, setOpenFriendsModal] = useState<boolean>(false);
+
+    const [statusOfTest, setStatusOfTest] = useState<StatusType>({
+        message: "",
+        isLoading: false,
+        isFailure: false,
+        isSuccess: false,
+    });
+    const [openStatusModal, setOpenStatusModal] = useState<boolean>(true);
 
     const {
         charIndex,
@@ -99,33 +108,61 @@ export default function TypingTest({
     const submitResult = useCallback(async () => {
         if (!user.id) return;
         if (highMistakeAlert) return;
+        setStatusOfTest({
+            message: "Submitting test report!",
+            isLoading: true,
+            isFailure: false,
+            isSuccess: false,
+        });
 
         const apiURL = import.meta.env.VITE_API_URL;
         const accuracy = (
             ((charIndex + 1 - mistakes) / (charIndex + 1)) *
             100
         ).toFixed(2);
-        const res = await fetch(`${apiURL}/api/typingtests/result`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                accuracy,
-                wpm,
-                duration: timeLimit,
-                errorPoints: [...errorPoints],
-                text: paragraph.slice(0, maxCharIndex + 1).join(""),
-            }),
-        });
+        try {
+            const res = await fetch(`${apiURL}/api/typingtests/result`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    accuracy,
+                    wpm,
+                    duration: timeLimit,
+                    errorPoints: [...errorPoints],
+                    text: paragraph.slice(0, maxCharIndex + 1).join(""),
+                }),
+            });
 
-        if (!res.ok) {
-            throw new Error("Can't submit test result");
-        }
-        const data = await res.json();
-        if (data["success"]) {
-            setTestResult(data["result"]);
+            if (!res.ok) {
+                throw new Error("Can't submit test result");
+            }
+            const data = await res.json();
+            if (data["success"]) {
+                setTestResult(data["result"]);
+                setStatusOfTest({
+                    message: "Submitted test report!",
+                    isLoading: false,
+                    isFailure: false,
+                    isSuccess: true,
+                });
+            } else {
+                setStatusOfTest({
+                    message: "Failed to submit test report!",
+                    isLoading: false,
+                    isFailure: true,
+                    isSuccess: false,
+                });
+            }
+        } catch {
+            setStatusOfTest({
+                message: "Failed to submit test report!",
+                isLoading: false,
+                isFailure: true,
+                isSuccess: false,
+            });
         }
     }, [
         charIndex,
@@ -248,6 +285,12 @@ export default function TypingTest({
                                 errorPoints={errorPoints}
                                 practiceWords={practiceWords}
                             />
+                            {timesUp && user.id && openStatusModal && (
+                                <StatusModal
+                                    status={statusOfTest}
+                                    onClose={() => setOpenStatusModal(false)}
+                                />
+                            )}
                             {testResult && (
                                 <>
                                     <button

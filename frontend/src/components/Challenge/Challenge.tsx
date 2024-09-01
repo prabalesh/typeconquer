@@ -275,7 +275,7 @@ export default function Challenge() {
                     message: "Failed to submit challenge report!",
                     isLoading: false,
                     isFailure: true,
-                    isSuccess: true,
+                    isSuccess: false,
                 });
             }
         } catch (error) {
@@ -285,7 +285,7 @@ export default function Challenge() {
                 message: "Failed to submit challenge report!",
                 isLoading: false,
                 isFailure: true,
-                isSuccess: true,
+                isSuccess: false,
             });
         }
     }, [challengeID, testResult]);
