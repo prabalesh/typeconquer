@@ -5,11 +5,13 @@ import {
     declineChallenge,
     getChallenge,
     getPendingChallenges,
+    myAllChallenges,
     submitChallenge,
 } from "./challengeController";
 
 const router = Router();
 
+router.get("/", authenticateToken, myAllChallenges);
 router.post("/pending", authenticateToken, getPendingChallenges);
 router.post("/create", authenticateToken, createChallenge);
 router.post("/getChallenge", authenticateToken, getChallenge);

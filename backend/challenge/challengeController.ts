@@ -292,3 +292,81 @@ export const declineChallenge = async (req: UserRequest, res: Response) => {
             .json({ success: false, message: "Internal server error." });
     }
 };
+
+interface QueryParams {
+    filter?: "all" | "my" | "their" | "pending" | "won" | "lost";
+    page?: string;
+    limit?: string;
+}
+
+interface ChallengeQuery {
+    $or: [{ challengedFriend: string }, { challenger: string }];
+    challenger?: string | { $ne: string };
+    status?: "pending" | "accepted" | "declined" | "completed";
+    winner?: string | { $ne: string };
+}
+
+export const myAllChallenges = async (req: UserRequest, res: Response) => {
+    if (!req.user) {
+        return res
+            .status(401)
+            .json({ success: false, message: "Unauthorized" });
+    }
+
+    const userID = req.user.id;
+    const { filter = "all", page = "1", limit = "10" }: QueryParams = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+
+    try {
+        const query: ChallengeQuery = {
+            $or: [{ challengedFriend: userID }, { challenger: userID }],
+        };
+
+        switch (filter) {
+            case "my":
+                query.challenger = userID;
+                break;
+            case "their":
+                query.challenger = { $ne: userID };
+                break;
+            case "pending":
+                query.status = "pending";
+                query.challenger = userID;
+                break;
+            case "won":
+                query.winner = userID;
+                break;
+            case "lost":
+                query.status = "completed";
+                query.winner = { $ne: userID };
+                break;
+            case "all":
+            default:
+                break;
+        }
+
+        const challenges = await Challenge.find(query)
+            .skip(skip)
+            .limit(Number(limit))
+            .sort({ updatedAt: -1 })
+            .populate("challenger", "name")
+            .populate("challengedFriend", "name")
+            .populate("typingTestResult", "wpm accuracy")
+            .populate("friendTestResult", "wpm accuracy")
+            .populate("winner", "name");
+
+        const totalChallenges = await Challenge.countDocuments(query);
+
+        return res.status(200).json({
+            success: true,
+            challenges,
+            totalChallenges,
+            totalPages: Math.ceil(totalChallenges / Number(limit)),
+        });
+    } catch (error) {
+        console.log("Error during my challenges:", error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Internal server error" });
+    }
+};

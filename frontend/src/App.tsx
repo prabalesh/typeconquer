@@ -10,6 +10,7 @@ import Register from "./pages/Register";
 import { Routes, Route } from "react-router-dom";
 import TypingTestResults from "./pages/TypingTestResults";
 import Challenge from "./pages/Challenge";
+import ChallengesPage from "./pages/ChallengesPage";
 
 function App() {
     const dispatch = useDispatch();
@@ -69,6 +70,7 @@ function App() {
                         path="/challenge/:challengeID"
                         element={<Challenge />}
                     />
+                    <Route path="/challenges" element={<ChallengesPage />} />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>

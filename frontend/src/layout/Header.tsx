@@ -137,6 +137,11 @@ const Header: React.FC = () => {
                                                 Test Results
                                             </Link>
                                         </div>
+                                        <div className="cursor-pointer">
+                                            <Link to={"/challenges"}>
+                                                Challenges
+                                            </Link>
+                                        </div>
                                     </div>
                                     <div className="p-2 border-bottom flex">
                                         <ThemeSelector border={false} />
