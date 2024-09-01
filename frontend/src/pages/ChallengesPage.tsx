@@ -124,12 +124,28 @@ const ChallengesPage: React.FC = () => {
                     {challenges.map((challenge) => (
                         <li
                             key={challenge._id}
-                            className="border p-4 rounded shadow"
+                            className={`border p-4 rounded-xl shadow ${
+                                challenge.challenger._id === userID &&
+                                "bg-[--highlighted-color]"
+                            }`}
                         >
                             <h3 className="text-xl font-semibold">
                                 {challenge.challenger._id === userID
                                     ? `You challenged ${challenge.challengedFriend.name}`
                                     : `Challenged by ${challenge.challenger.name}`}
+                                <span>
+                                    {" "}
+                                    {challenge.winner &&
+                                    challenge.winner._id === userID ? (
+                                        <span className="text-green-500">
+                                            (You Won!)
+                                        </span>
+                                    ) : (
+                                        <span className="text-red-500">
+                                            (You Lost!){" "}
+                                        </span>
+                                    )}
+                                </span>
                             </h3>
                             <p>
                                 Challenge Date:{" "}

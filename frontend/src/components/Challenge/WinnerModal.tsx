@@ -57,7 +57,7 @@ const WinnerModal = ({
                     {defeat ? (
                         <p className="text-red-500">Defeated 😔</p>
                     ) : (
-                        <p className="text-green-500">Congratulations!</p>
+                        <p className="text-green-500">Congratulations! 🥳</p>
                     )}
                 </h2>
                 <p>
