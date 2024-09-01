@@ -153,7 +153,7 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                         {filteredFriends.length > 0 ? (
                             filteredFriends.map((friend) => (
                                 <li key={friend._id} className="mb-2">
-                                    <div className="flex items-center space-x-3 justify-around">
+                                    <div className="flex justify-between items-center gap-2">
                                         <div className="flex gap-4 truncate">
                                             <img
                                                 src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
