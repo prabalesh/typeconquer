@@ -206,7 +206,7 @@ function TypingDisplay({
                         key={lno}
                         className={`flex ${
                             !isMobile &&
-                            paragraph.length - charIndex > 90 &&
+                            paragraph.length - charIndex > 130 &&
                             textAlign
                         }`}
                         style={{ whiteSpace: "pre-wrap", textAlign: "justify" }}

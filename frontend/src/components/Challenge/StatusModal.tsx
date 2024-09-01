@@ -1,6 +1,7 @@
 import React from "react";
 import { StatusType } from "../../types";
 import Spinner from "../Spinner";
+import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
     status: StatusType;
@@ -11,6 +12,8 @@ const StatusModal: React.FC<ModalProps> = ({ status, onClose }) => {
     if (status.isSuccess) {
         onClose();
     }
+
+    const naviagte = useNavigate();
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
@@ -30,7 +33,10 @@ const StatusModal: React.FC<ModalProps> = ({ status, onClose }) => {
                 ) : (
                     <button
                         className="mt-4 py-2 px-4 sm:py-2 sm:px-6 border shadow-md rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
-                        onClick={onClose}
+                        onClick={() => {
+                            onClose();
+                            naviagte("/");
+                        }}
                     >
                         Close
                     </button>

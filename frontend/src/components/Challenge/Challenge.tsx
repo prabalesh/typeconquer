@@ -105,6 +105,36 @@ export default function Challenge() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (challenge) {
+            dispatch(setParagraph(challenge.typingTestResult.text.split("")));
+            dispatch(setTimeLimit(challenge.typingTestResult.duration));
+        }
+    }, [challenge, dispatch]);
+
+    const {
+        charIndex,
+        mistakes,
+        isCharCorrectWrong,
+        errorPoints,
+        timeLeft,
+        timesUp,
+        wpm,
+        cpm,
+        practiceWords,
+        maxCharIndex,
+        setTimesUp,
+        resetTypingState,
+    } = useTypingState(inputRef);
+
+    const resetChallenge = useCallback(() => {
+        setTimesUp(false);
+    }, [setTimesUp]);
+
+    useEffect(() => {
+        resetChallenge();
+    }, [resetChallenge]);
+
+    useEffect(() => {
         const fetchChallenge = async () => {
             setLoading(true);
             const apiURL = `${
@@ -137,30 +167,14 @@ export default function Challenge() {
                 setLoading(false);
             }
         };
-
+        resetChallenge();
         fetchChallenge();
-    }, [challengeID, dispatch]);
+        resetTypingState();
+    }, [challengeID, dispatch, resetChallenge, resetTypingState]);
 
     useEffect(() => {
-        if (challenge) {
-            dispatch(setParagraph(challenge.typingTestResult.text.split("")));
-            dispatch(setTimeLimit(challenge.typingTestResult.duration));
-        }
-    }, [challenge, dispatch]);
-
-    const {
-        charIndex,
-        mistakes,
-        isCharCorrectWrong,
-        errorPoints,
-        timeLeft,
-        timesUp,
-        wpm,
-        cpm,
-        practiceWords,
-        maxCharIndex,
-        setTimesUp,
-    } = useTypingState(inputRef);
+        inputRef.current?.focus();
+    }, []);
 
     const submitResult = useCallback(async () => {
         if (!user.id) return;
@@ -289,14 +303,6 @@ export default function Challenge() {
             });
         }
     }, [challengeID, testResult]);
-
-    const resetChallenge = useCallback(() => {
-        setTimesUp(false);
-    }, [setTimesUp]);
-
-    useEffect(() => {
-        resetChallenge();
-    }, [resetChallenge]);
 
     useEffect(() => {
         inputRef.current?.focus();
