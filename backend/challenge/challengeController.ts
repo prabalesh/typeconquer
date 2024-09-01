@@ -21,9 +21,10 @@ export const createChallenge = async (req: UserRequest, res: Response) => {
         const { challengedFriendID, typingTestResultID } = req.body;
 
         if (!challengedFriendID || !typingTestResultID) {
-            return res
-                .status(400)
-                .json({ error: "Can't send challenge request." });
+            return res.status(400).json({
+                success: false,
+                message: "Can't send challenge request.",
+            });
         }
 
         const friendship = await Friendship.findOne({
@@ -42,15 +43,54 @@ export const createChallenge = async (req: UserRequest, res: Response) => {
         });
 
         if (!friendship) {
-            return res
-                .status(403)
-                .json({ error: "You can only challenge friends." });
+            return res.status(403).json({
+                success: false,
+                message: "You can only challenge friends.",
+            });
         }
 
         const typingTestResult = await TypingTestResult.findOne({
             _id: typingTestResultID,
             userID: challengerID,
         });
+
+        const challengesOfChallenged = await Challenge.find({
+            challengedFriend: challengedFriendID,
+            status: "pending",
+        });
+
+        const challengesOfSameTest = await Challenge.findOne({
+            challenger: challengerID,
+            challengedFriend: challengedFriendID,
+            typingTestResult: typingTestResultID,
+        });
+
+        if (challengesOfSameTest) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "You've already challenged your friend to this typing test.",
+            });
+        }
+
+        if (challengesOfChallenged.length > 15) {
+            return res.status(400).json({
+                success: false,
+                message: "Your friend has lot of pending challenges.",
+            });
+        }
+
+        const userChallenges = challengesOfChallenged.filter(
+            (challenge) => challenge.challenger.toString() === challengerID
+        );
+
+        if (userChallenges.length > 5) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Your friend has more than 5 of your pending challenges.",
+            });
+        }
 
         if (!typingTestResult) {
             return res.status(404).json({

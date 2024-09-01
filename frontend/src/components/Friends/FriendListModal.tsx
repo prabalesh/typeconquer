@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 type Friend = {
     _id: string;
@@ -90,13 +91,9 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                 }),
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                return { error: errorData.error || "An error occurred" };
-            }
-
             const data: ChallengeResponse = await response.json();
             if (data["success"]) {
+                toast.success(data["message"]);
                 setFriends((prevState) =>
                     prevState.map((frnd) =>
                         frnd._id === friend._id
@@ -107,10 +104,11 @@ const FriendListModal: React.FC<FriendModalProps> = ({
                             : frnd
                     )
                 );
+            } else {
+                toast.error(data["message"]);
             }
-        } catch (error) {
-            console.error("Error creating challenge:", error);
-            return { error: "Server error while creating the challenge" };
+        } catch {
+            toast.error("Couldn't send challenge");
         }
     };
 
