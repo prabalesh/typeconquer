@@ -29,3 +29,10 @@ export interface ChallengeType {
     status: "pending" | "accepted" | "declined" | "completed";
     typingTestResult: TestResultType;
 }
+
+export interface StatusType {
+    message: string | null;
+    isLoading: boolean | null;
+    isFailure: boolean | null;
+    isSuccess: boolean | null;
+}

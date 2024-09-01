@@ -16,7 +16,8 @@ import WinnerModal from "./WinnerModal";
 
 import useTypingState from "../../hooks/useTypingState";
 
-import { TestResultType } from "../../types";
+import { StatusType, TestResultType } from "../../types";
+import StatusModal from "./StatusModal";
 
 interface ReqUser {
     id: string;
@@ -93,6 +94,14 @@ export default function Challenge() {
 
     const [openWinnerModal, setOpenWinnerModal] = useState<boolean>(true);
 
+    const [statusOfChallenge, setStatusOfChallenge] = useState<StatusType>({
+        message: "",
+        isLoading: false,
+        isFailure: false,
+        isSuccess: false,
+    });
+    const [openStatusModal, setOpenStatusModal] = useState<boolean>(true);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -156,32 +165,61 @@ export default function Challenge() {
     const submitResult = useCallback(async () => {
         if (!user.id) return;
 
+        setStatusOfChallenge({
+            message: "Submitting test report!",
+            isLoading: true,
+            isFailure: false,
+            isSuccess: false,
+        });
+
         const apiURL = import.meta.env.VITE_API_URL;
         const accuracy = (
             ((charIndex + 1 - mistakes) / (charIndex + 1)) *
             100
         ).toFixed(2);
-        const res = await fetch(`${apiURL}/api/typingtests/result`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                accuracy,
-                wpm,
-                duration: timeLimit,
-                errorPoints: [...errorPoints],
-                text: paragraph.slice(0, maxCharIndex + 1).join(""),
-            }),
-        });
+        try {
+            const res = await fetch(`${apiURL}/api/typingtests/result`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    accuracy,
+                    wpm,
+                    duration: timeLimit,
+                    errorPoints: [...errorPoints],
+                    text: paragraph.slice(0, maxCharIndex + 1).join(""),
+                }),
+            });
 
-        if (!res.ok) {
-            throw new Error("Can't submit test result");
-        }
-        const data = await res.json();
-        if (data["success"]) {
-            setTestResult(data["result"]);
+            if (!res.ok) {
+                throw new Error("Can't submit test result");
+            }
+            const data = await res.json();
+            if (data["success"]) {
+                setTestResult(data["result"]);
+                setStatusOfChallenge({
+                    message: "Submitted test report!",
+                    isLoading: true,
+                    isFailure: false,
+                    isSuccess: false,
+                });
+            } else {
+                setStatusOfChallenge({
+                    message: "Failed to submit test report!",
+                    isLoading: false,
+                    isFailure: true,
+                    isSuccess: false,
+                });
+            }
+        } catch {
+            setStatusOfChallenge({
+                message: "Failed to submit test report!",
+                isLoading: false,
+                isFailure: true,
+                isSuccess: false,
+            });
         }
     }, [
         charIndex,
@@ -197,6 +235,12 @@ export default function Challenge() {
     const submitChallenge = useCallback(async () => {
         const apiURL = `${import.meta.env.VITE_API_URL}/api/challenges/submit`;
         if (!testResult) return;
+        setStatusOfChallenge({
+            message: "Submitting challenge report!",
+            isLoading: true,
+            isFailure: false,
+            isSuccess: false,
+        });
         try {
             const response = await fetch(apiURL, {
                 method: "POST",
@@ -220,10 +264,29 @@ export default function Challenge() {
                 console.log(data["challenge"]);
                 setSubmitChallengeResult(data);
                 toast.success("Challenge submitted successfully");
+                setStatusOfChallenge({
+                    message: "Submitted challenge report!",
+                    isLoading: false,
+                    isFailure: false,
+                    isSuccess: true,
+                });
+            } else {
+                setStatusOfChallenge({
+                    message: "Failed to submit challenge report!",
+                    isLoading: false,
+                    isFailure: true,
+                    isSuccess: true,
+                });
             }
         } catch (error) {
             toast.error("Error submitting challenge");
             console.log(error);
+            setStatusOfChallenge({
+                message: "Failed to submit challenge report!",
+                isLoading: false,
+                isFailure: true,
+                isSuccess: true,
+            });
         }
     }, [challengeID, testResult]);
 
@@ -293,6 +356,12 @@ export default function Challenge() {
                         <p>{challenge.typingTestResult.accuracy}% accuracy</p>
                     </div>
                 </div>
+            )}
+            {timesUp && openStatusModal && (
+                <StatusModal
+                    status={statusOfChallenge}
+                    onClose={() => setOpenStatusModal(false)}
+                />
             )}
             <TypingInput inputRef={inputRef} />
             {testResult && submitChallengeResult && timesUp && (
