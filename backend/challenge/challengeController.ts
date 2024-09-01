@@ -245,7 +245,7 @@ export const submitChallenge = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const rejectChallenge = async (req: UserRequest, res: Response) => {
+export const declineChallenge = async (req: UserRequest, res: Response) => {
     if (!req.user) {
         return res.status(401);
     }
@@ -263,7 +263,7 @@ export const rejectChallenge = async (req: UserRequest, res: Response) => {
 
         const challenge = await Challenge.findOne({
             _id: challengeID,
-            challenger: userID,
+            challengedFriend: userID,
             status: "pending",
         });
         if (!challenge) {

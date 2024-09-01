@@ -5,8 +5,15 @@ import { siderbarClose } from "../../features/sidebar/sidebarsSice";
 import formatRelativeTime from "../../utils/relativeTime";
 import { ChallengeType } from "../../types";
 
-function ChallengeItem({ challenge }: { challenge: ChallengeType }) {
+function ChallengeItem({
+    challenge,
+    handleDeclineChallenge,
+}: {
+    challenge: ChallengeType;
+    handleDeclineChallenge: (challengeID: string) => Promise<void>;
+}) {
     const dispatch = useDispatch();
+
     return (
         <li
             className="flex flex-col gap-2 bordered rounded-xl p-2 text-sm text-center"
@@ -35,7 +42,12 @@ function ChallengeItem({ challenge }: { challenge: ChallengeType }) {
                     >
                         Accept
                     </Link>
-                    <button className="bg-[--bg-color] w-2/4 hover:bg-red-600">
+                    <button
+                        className="bg-[--bg-color] w-2/4 hover:bg-red-600"
+                        onClick={() =>
+                            handleDeclineChallenge(challenge._id.toString())
+                        }
+                    >
                         Decline
                     </button>
                 </div>

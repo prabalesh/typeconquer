@@ -4,6 +4,8 @@ import Spinner from "../Spinner";
 import ChallengeItem from "./ChallengeItem";
 import { ChallengeType } from "../../types";
 
+import { toast } from "react-toastify";
+
 const Challengebar: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errors, setErrors] = useState<string | null>(null);
@@ -43,6 +45,37 @@ const Challengebar: React.FC = () => {
         fetchPendingChallenges();
     }, []);
 
+    const handleDeclineChallenge = async (challengeID: string) => {
+        const apiURL = `${import.meta.env.VITE_API_URL}/api/challenges/decline`;
+
+        try {
+            const res = await fetch(apiURL, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ challengeID }),
+            });
+            const data = await res.json();
+
+            if (data["success"]) {
+                toast.success(data["message"]);
+                setPendingChallenges((prevState) => {
+                    return prevState.filter(
+                        (challenge: ChallengeType) =>
+                            challenge._id.toString() !== challengeID
+                    );
+                });
+            } else {
+                toast.error(data["message"]);
+            }
+        } catch (error) {
+            console.log("error during declining challenge", error);
+            toast.error("Failed to decline challenge");
+        }
+    };
+
     return (
         <div className="relative flex-1 p-4 overflow-y-auto">
             <div className="text-xl font-semibold mb-4">
@@ -63,7 +96,13 @@ const Challengebar: React.FC = () => {
                     {pendingChallenges.length > 0 ? (
                         <ul className="flex flex-col gap-2">
                             {pendingChallenges.map((challenge, i) => (
-                                <ChallengeItem key={i} challenge={challenge} />
+                                <ChallengeItem
+                                    key={i}
+                                    challenge={challenge}
+                                    handleDeclineChallenge={
+                                        handleDeclineChallenge
+                                    }
+                                />
                             ))}
                         </ul>
                     ) : (
