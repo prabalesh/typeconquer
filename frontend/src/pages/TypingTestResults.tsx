@@ -1,13 +1,15 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import LoginRequired from "../components/User/LoginRequired";
-import { useCallback, useEffect, useState } from "react";
-import Spinner from "../components/Spinner";
-import { toast } from "react-toastify";
+
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import LoginRequired from "../components/User/LoginRequired";
+import Spinner from "../components/Spinner";
 import TestResultsItem from "../components/TypingTestResults/TestResultsItem";
 
-import { TestResultType, BestWpmResultType } from "../types";
+import { useBestWpmResult } from "../api/hooks/useBestWPMResult";
+import { useTestResults } from "../api/hooks/useTestResults";
 
 function TypingTestResults() {
     const user = useSelector((state: RootState) => state.user);
@@ -15,76 +17,13 @@ function TypingTestResults() {
     const pageLimit = 10;
     const [pageNum, setPageNum] = useState<number>(1);
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [isBestWpmLoading, setIsBestWpmLoading] = useState<boolean>(true);
-    const [errors, setErrors] = useState<string | null>(null);
-
-    const [testResults, setResults] = useState<TestResultType[]>([]);
-    const [bestWpmResult, setBestWpmResult] =
-        useState<BestWpmResultType | null>(null);
-    const [hasMoreResults, setHasMoreResults] = useState<boolean>(true); // To track if there are more results
-
-    const fetchResults = useCallback(async () => {
-        setIsLoading(true);
-        const apiUrl = `${
-            import.meta.env.VITE_API_URL
-        }/api/typingtests/results?page=${pageNum}&limit=${pageLimit}`;
-
-        try {
-            const res = await fetch(apiUrl, {
-                method: "POST",
-                credentials: "include",
-            });
-
-            if (!res.ok) {
-                throw new Error("Server error!");
-            }
-            const data = await res.json();
-            if (typeof data === "object" && "success" in data) {
-                if (data.success) {
-                    if ("testResults" in data) {
-                        const results = data["testResults"] as TestResultType[];
-                        setResults(results);
-                        setHasMoreResults(results.length === pageLimit); // Check if there are more results
-                    } else {
-                        toast.error(data?.message || "Unknown error");
-                    }
-                }
-            }
-        } catch {
-            toast.error("Failed to fetch results!");
-            setErrors("Failed to fetch typing test results");
-        }
-        setIsLoading(false);
-    }, [pageLimit, pageNum]);
-
-    const fetchBestResult = useCallback(async () => {
-        setIsBestWpmLoading(true);
-        const apiURL = `${
-            import.meta.env.VITE_API_URL
-        }/api/typingtests/bestresult`;
-
-        try {
-            const res = await fetch(apiURL, {
-                method: "GET",
-                credentials: "include",
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to fetch best result");
-            }
-
-            const data = await res.json();
-            if (typeof data === "object" && "bestWPM" in data) {
-                if (typeof data["bestWPM"] === "number") {
-                    setBestWpmResult(data);
-                }
-            }
-        } catch {
-            console.error("Failed to fetch best WPM result");
-        }
-        setIsBestWpmLoading(false);
-    }, []);
+    const { testResults, isLoading, errors, hasMoreResults, fetchResults } =
+        useTestResults(pageNum, pageLimit);
+    const {
+        bestWpmResult,
+        isLoading: isBestWpmLoading,
+        fetchBestResult,
+    } = useBestWpmResult();
 
     useEffect(() => {
         fetchResults();

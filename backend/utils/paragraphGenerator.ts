@@ -626,7 +626,7 @@ export default function generateParagraph({
     difficulty = "medium",
     includeSymbols = false,
     includeNumbers = false,
-}: ParagraphOptions): string[] {
+}: ParagraphOptions): string {
     const words = wordBank[difficulty];
     const specialWordCount = Math.floor(wordCount * 0.4);
     const normalWordCount = wordCount - specialWordCount;
@@ -702,5 +702,5 @@ export default function generateParagraph({
 
     const finalParagraph = capitalizeFirstLetter(paragraphArr.join("").trim());
 
-    return finalParagraph.split("");
+    return finalParagraph;
 }

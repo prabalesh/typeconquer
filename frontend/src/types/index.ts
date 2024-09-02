@@ -45,3 +45,57 @@ export type NotificationType = {
     read: boolean;
     createdAt: Date;
 };
+
+export interface Challenge {
+    _id: string;
+    challenger: {
+        _id: string;
+        name: string;
+    };
+    challengedFriend: {
+        _id: string;
+        name: string;
+    };
+    typingTestResult: {
+        wpm: number;
+        accuracy: number;
+    };
+    friendTestResult?: {
+        wpm: number;
+        accuracy: number;
+    };
+    status: "pending" | "accepted" | "declined" | "completed";
+    challengeDate: Date;
+    completedDate?: Date;
+    winner?: {
+        _id: string;
+        name: string;
+    };
+}
+
+export interface SubmitChallengeResponse {
+    success: boolean;
+    challenge: {
+        _id: string;
+        challenger: { _id: string; name: string; username: string };
+        challengedFriend: { _id: string; name: string; username: string };
+        typingTestResult: {
+            _id: string;
+            wpm: number;
+            accuracy: number;
+            text: string;
+            duration: number;
+        };
+        friendTestResult?: {
+            _id: string;
+            wpm: number;
+            accuracy: number;
+            text: string;
+            duration: number;
+        };
+        status: "pending" | "accepted" | "declined" | "completed";
+        challengeDate: string;
+        completedDate?: string;
+        winner: { _id: string };
+    };
+}

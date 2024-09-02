@@ -8,6 +8,7 @@ import Sidebar from "../components/SideBar";
 import { siderbarOpen } from "../features/sidebar/sidebarsSice";
 import { NotificationType } from "../types";
 import NotificationPanel from "../components/NotificationPanel";
+import { fetchNotifications } from "../api/fetchNotifications";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -26,29 +27,27 @@ const Header: React.FC = () => {
 
     useEffect(() => {
         if (!user.id) return;
-        const fetchNotifications = async () => {
-            const apiURL = `${import.meta.env.VITE_API_URL}/api/notifications`;
-            try {
-                const res = await fetch(apiURL, {
-                    method: "GET",
-                    credentials: "include",
-                });
 
-                const data = await res.json();
-                if (data["success"]) {
-                    setNotifications(data["notifications"]);
-                } else {
-                    console.log(
-                        "error occured fetching notifications: ",
-                        data["message"]
-                    );
-                }
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        const fetchUserNotifications = async () => {
+            try {
+                const notifications = await fetchNotifications(signal);
+                setNotifications(notifications);
             } catch {
-                console.log("Failed to fetch notification");
+                console.log("failed to fetch notifications");
             }
         };
-        if (!isNotificationOpen) fetchNotifications();
-    }, [user, isNotificationOpen]);
+
+        if (isNotificationOpen) {
+            fetchUserNotifications();
+        }
+
+        return () => {
+            controller.abort();
+        };
+    }, [user.id, isNotificationOpen]);
 
     const unreadNotifications = notifications.filter((n) => !n.read).length;
 
@@ -166,7 +165,6 @@ const Header: React.FC = () => {
                     )}
                 </div>
             </header>
-            {/* Spacer div to push content below the fixed header */}
             <div style={{ height: "10vh", minHeight: "60px" }}></div>
         </>
     );

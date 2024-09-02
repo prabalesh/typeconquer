@@ -43,7 +43,7 @@ export default function TypingTest({
         isFailure: false,
         isSuccess: false,
     });
-    const [openStatusModal, setOpenStatusModal] = useState<boolean>(true);
+    const [openStatusModal, setOpenStatusModal] = useState<boolean>(false);
 
     const {
         charIndex,
@@ -108,6 +108,7 @@ export default function TypingTest({
     const submitResult = useCallback(async () => {
         if (!user.id) return;
         if (highMistakeAlert) return;
+        setOpenStatusModal(true);
         setStatusOfTest({
             message: "Submitting test report!",
             isLoading: true,

@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
+import { useSelector } from "react-redux";
 
-import { setUser } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../app/store";
+import { useGoogleLogin } from "../api/hooks/useGoogleLogin";
 
 const Register: React.FC = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const user = useSelector((state: RootState) => state.user);
@@ -19,57 +16,7 @@ const Register: React.FC = () => {
         }
     }, [navigate, user]);
 
-    const handleLoginSuccess = async (response: CredentialResponse) => {
-        const { credential } = response;
-
-        try {
-            const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/auth/google`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tokenID: credential,
-                    }),
-                    credentials: "include",
-                }
-            );
-            if (!res.ok) {
-                throw new Error("Failed to login!");
-            }
-            const data = await res.json();
-            if (data.success && data["accessToken"]) {
-                const decodedUserData = await jwtDecode<{
-                    id: string;
-                    email: string;
-                    name: string;
-                }>(data["accessToken"]);
-                dispatch(
-                    setUser({
-                        id: decodedUserData["id"],
-                        email: decodedUserData["email"],
-                        name: decodedUserData["name"],
-                    })
-                );
-
-                toast.success("Logged in successfully");
-                navigate("/");
-            } else {
-                toast.error(
-                    "Failed to login:" + (data.message || "Unknown error")
-                );
-            }
-        } catch (err: unknown) {
-            console.log(err);
-            toast.error("Login failed!");
-        }
-    };
-
-    const handleLoginError = () => {
-        toast.error("Login failed!");
-    };
+    const { handleLoginSuccess, handleLoginError } = useGoogleLogin();
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-[var(--bg-color)] px-4 sm:px-6 lg:px-8">

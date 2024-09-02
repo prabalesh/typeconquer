@@ -1,50 +1,22 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { clearUser, setUser } from "./features/user/userSlice";
+import { Routes, Route } from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import Layout from "./layout/Layout";
+
+import { useFetchUserData } from "./api/hooks/useFetchUserData";
+
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import Register from "./pages/Register";
-import { Routes, Route } from "react-router-dom";
 import TypingTestResults from "./pages/TypingTestResults";
 import Challenge from "./pages/Challenge";
 import ChallengesPage from "./pages/ChallengesPage";
+import NotFound from "./pages/NotFound";
 
 function App() {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const fetchUserData = async (retryCount = 5) => {
-            try {
-                const response = await fetch(
-                    `${import.meta.env.VITE_API_URL}/api/auth/user`,
-                    {
-                        method: "GET",
-                        credentials: "include",
-                    }
-                );
-
-                if (response.ok) {
-                    const data = await response.json();
-                    dispatch(setUser(data));
-                } else {
-                    dispatch(clearUser());
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-                if (retryCount > 0) {
-                    console.log(`Retrying... (${retryCount} attempts left)`);
-                    setTimeout(() => fetchUserData(retryCount - 1), 2000);
-                } else {
-                    dispatch(clearUser());
-                }
-            }
-        };
-
-        fetchUserData();
-    }, [dispatch]);
+    // to fetch user data
+    useFetchUserData();
 
     return (
         <div className="flex flex-col min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
