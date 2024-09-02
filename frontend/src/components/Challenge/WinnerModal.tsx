@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const WinnerModal = ({
     isOpen,
@@ -66,6 +67,15 @@ const WinnerModal = ({
                 <p>
                     Challenger's WPM: {challengerWPM}, Challenger's accuracy:{" "}
                     {challengerAccuracy}%
+                </p>
+                <p className="text-center">
+                    <Link
+                        to={"/challenges"}
+                        className="underline text-blue-500"
+                    >
+                        Click here
+                    </Link>{" "}
+                    to see all your challenges
                 </p>
                 <button
                     className="my-4 py-2 px-4 sm:py-2 sm:px-6 border shadow-md rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] text-[var(--button-text)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"

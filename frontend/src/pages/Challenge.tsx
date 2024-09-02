@@ -109,6 +109,7 @@ export default function Challenge() {
             dispatch(setParagraph(challenge.typingTestResult.text.split("")));
             dispatch(setTimeLimit(challenge.typingTestResult.duration));
         }
+        inputRef.current?.focus();
     }, [challenge, dispatch]);
 
     const {
@@ -325,6 +326,12 @@ export default function Challenge() {
         setSubmitChallengeResult(null);
         resetChallenge();
     }, [resetChallenge]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 0);
+    }, []);
 
     if (loading) {
         return (
