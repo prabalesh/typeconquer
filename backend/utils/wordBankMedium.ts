@@ -239,4 +239,5 @@ export const wordBankMedium = [
     "xylophone",
     "yogurt",
     "zeppelin",
+    "keen",
 ];

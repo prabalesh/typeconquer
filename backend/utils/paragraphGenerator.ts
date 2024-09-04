@@ -40,7 +40,7 @@ export default async function generateParagraph({
     difficulty = "medium",
     includeSymbols = false,
     includeNumbers = false,
-    chunkSize = 10,
+    chunkSize = 120,
 }: ParagraphOptions): Promise<string> {
     const words: string[] = await getWordsForDifficulty(difficulty);
 
