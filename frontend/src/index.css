@@ -3,10 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-    font-family: "Poppins", sans-serif;
-}
-
 :root {
     --color-primary: #3490dc;
     --color-secondary: #ffed4a;
