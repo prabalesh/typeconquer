@@ -6,8 +6,7 @@ import { toast } from "react-toastify";
 export const useLogout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL; // Use environment variable for API URL
-
+    const apiUrl = import.meta.env.VITE_API_URL;
     const logout = async () => {
         try {
             const response = await fetch(`${apiUrl}/api/auth/logout`, {
@@ -18,9 +17,8 @@ export const useLogout = () => {
             if (response.ok) {
                 dispatch(clearUser());
                 toast.success("Logged out successfully");
-                navigate("/auth/login"); // Navigate after state update and toast
+                navigate("/auth/login");
             } else {
-                // const errorText = await response.text();
                 toast.error(`Logout failed! `);
             }
         } catch (error) {

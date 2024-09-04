@@ -120,7 +120,6 @@ export default function Challenge() {
         timeLeft,
         timesUp,
         wpm,
-        cpm,
         practiceWords,
         maxCharIndex,
         setTimesUp,
@@ -418,12 +417,7 @@ export default function Challenge() {
                     />
                 ))}
 
-            <TypingStats
-                timeLeft={timeLeft}
-                wpm={wpm}
-                cpm={cpm}
-                resetGame={null}
-            />
+            <TypingStats timeLeft={timeLeft} wpm={wpm} resetGame={null} />
 
             <div className="my-4">
                 <p className="text-sm">
