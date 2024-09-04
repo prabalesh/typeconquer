@@ -54,7 +54,7 @@ const Header: React.FC = () => {
     return (
         <>
             <header
-                className="fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5"
+                className="fixed top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 md:px-8 md:py-5 lg:px-12 lg:py-6"
                 style={{
                     height: "10vh",
                     minHeight: "60px",
@@ -66,17 +66,17 @@ const Header: React.FC = () => {
                         TypeConquer
                     </h1>
                 </Link>
-                <div className="flex space-x-2 sm:space-x-4 items-center">
+                <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
                     <div>
                         <Link to={"/learningcurve"}>Learning Curve</Link>
                     </div>
                     {user && user.id ? (
                         <>
                             {isSidebarOpen && <Sidebar />}
-                            <div className="flex gap-8 items-center">
+                            <div className="flex gap-4 items-center">
                                 <div className="relative cursor-pointer">
                                     <div
-                                        className="text-xl"
+                                        className="text-xl sm:text-2xl md:text-3xl"
                                         onClick={() =>
                                             setNotificationOpen(
                                                 !isNotificationOpen
@@ -98,7 +98,7 @@ const Header: React.FC = () => {
                                     )}
                                 </div>
                                 <div onClick={() => dispatch(siderbarOpen())}>
-                                    <i className="fas fa-users text-xl"></i>
+                                    <i className="fas fa-users text-xl sm:text-2xl"></i>
                                 </div>
                                 <div
                                     className="relative cursor-pointer"
@@ -107,7 +107,7 @@ const Header: React.FC = () => {
                                     <img
                                         src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
                                         alt="Profile"
-                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                        className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover"
                                     />
                                 </div>
                             </div>
@@ -120,11 +120,11 @@ const Header: React.FC = () => {
                                         maxWidth: "300px",
                                     }}
                                 >
-                                    <div className="flex gap-4 p-4 border-bottom items-center">
+                                    <div className="flex gap-4 p-4 border-b items-center">
                                         <img
                                             src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
                                             alt="Profile"
-                                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                                            className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover"
                                         />
                                         <div className="overflow-hidden">
                                             <p className="text-sm font-semibold truncate">
@@ -133,7 +133,7 @@ const Header: React.FC = () => {
                                             <p>@{user.email}</p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-2 px-2 py-2 truncate border-bottom">
+                                    <div className="flex flex-col gap-2 px-2 py-2 border-b">
                                         <div className="cursor-pointer">
                                             <Link to={"/typingtest/results"}>
                                                 Test Results
@@ -145,7 +145,7 @@ const Header: React.FC = () => {
                                             </Link>
                                         </div>
                                     </div>
-                                    <div className="p-2 border-bottom flex">
+                                    <div className="p-2 border-b flex">
                                         <ThemeSelector border={false} />
                                     </div>
                                     <div className="py-2 text-center">
@@ -160,7 +160,7 @@ const Header: React.FC = () => {
                         <>
                             <Link
                                 to={"/auth/register"}
-                                className="bg-[var(--secondary-color)] text-[-var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"
+                                className="bg-[var(--secondary-color)] text-[var(--text-color)] text-sm sm:text-base px-3 sm:px-4 py-2 rounded hover:bg-opacity-90 transition-all"
                             >
                                 Register
                             </Link>
