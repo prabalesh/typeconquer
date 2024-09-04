@@ -23,14 +23,12 @@ function TypingDisplay({
             : "justify-around";
     });
 
-    // Effect to save textAlign to localStorage on change
     useEffect(() => {
         localStorage.setItem("textAlign", textAlign);
     }, [textAlign]);
 
     useEffect(() => {
         function checkIfMobile() {
-            // Check for mobile device using user agent or window width
             const userAgent = navigator.userAgent || navigator.vendor;
             const isMobileDevice =
                 /android|iPad|iPhone|iPod/.test(userAgent) ||
@@ -38,7 +36,7 @@ function TypingDisplay({
             setIsMobile(isMobileDevice);
         }
 
-        checkIfMobile(); // Initial check
+        checkIfMobile();
         window.addEventListener("resize", checkIfMobile);
 
         return () => {
@@ -52,7 +50,7 @@ function TypingDisplay({
                 const container = document.getElementById("typing-display");
                 if (container) {
                     const containerWidth = container.clientWidth;
-                    const charWidth = 16; // Adjust this value if necessary
+                    const charWidth = 16;
                     const newLineLength = Math.floor(
                         containerWidth / charWidth
                     );
@@ -110,20 +108,17 @@ function TypingDisplay({
     }
 
     const startLineIndex = Math.max(0, currentLineIndex - 1);
-    const visibleLines = lines.slice(
-        startLineIndex,
-        startLineIndex + 3 // Display a fixed number of lines
-    );
+    const visibleLines = lines.slice(startLineIndex, startLineIndex + 3);
 
     return (
         <div
             id="typing-display"
             className="tracking-widest text-gray-600"
             style={{
-                width: isMobile ? "100%" : "auto", // Adjust width based on mobile
-                maxHeight: isMobile ? "calc(100vh - 80px)" : "auto", // Adjust height based on mobile
-                overflow: isMobile ? "auto" : "hidden", // Prevent scrollbars if not mobile
-                padding: isMobile ? "10px" : "0", // Add padding on mobile for better appearance
+                width: isMobile ? "100%" : "auto",
+                maxHeight: isMobile ? "calc(100vh - 80px)" : "auto",
+                overflow: isMobile ? "auto" : "hidden",
+                padding: isMobile ? "10px" : "0",
             }}
             onClick={() => inputRef.current?.focus()}
         >
@@ -223,9 +218,6 @@ function TypingDisplay({
                                             ? "cur-cursor"
                                             : ""
                                     }`}
-                                    style={{
-                                        whiteSpace: "pre",
-                                    }}
                                 >
                                     {char === " " ? "\u00A0" : char}
                                 </span>

@@ -327,23 +327,27 @@ export default function TypingTest({
                 cpm={cpm}
                 resetGame={() => setResetGameFlag(true)}
             />
-            <TypingOptions
-                setTimeLimit={(newTimeLimit) => {
-                    dispatch(setTimeLimit(newTimeLimit));
-                    setResetGameFlag(true);
-                }}
-            />
-            <div className="my-4">
-                <p className="text-sm">
-                    <span
-                        className="bg-[var(--button-hover)] text-[var(--button-hover-text)] rounded px-1 inline-block text-center"
-                        style={{ width: "50px" }}
-                    >
-                        esc
-                    </span>{" "}
-                    - unfocus
-                </p>
-            </div>
+            {!isTyping && (
+                <TypingOptions
+                    setTimeLimit={(newTimeLimit) => {
+                        dispatch(setTimeLimit(newTimeLimit));
+                        setResetGameFlag(true);
+                    }}
+                />
+            )}
+            {!isTyping && (
+                <div className="my-4">
+                    <p className="text-sm">
+                        <span
+                            className="bg-[var(--button-hover)] text-[var(--button-hover-text)] rounded px-1 inline-block text-center"
+                            style={{ width: "50px" }}
+                        >
+                            esc
+                        </span>{" "}
+                        - unfocus
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

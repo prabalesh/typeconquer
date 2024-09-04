@@ -188,10 +188,13 @@ export default function useLessonState(
             const elapsedTimeInMinutes = (nowTime - startTime) / 60000;
 
             if (elapsedTimeInMinutes > 0) {
-                const wpm = Math.floor(
-                    (charIndex + 1) / 5 / elapsedTimeInMinutes
+                const wpm = Math.max(
+                    Math.floor(
+                        (charIndex + 1 - mistakes) / 5 / elapsedTimeInMinutes
+                    ),
+                    0
                 );
-                setAccuracy(((charIndex - mistakes) / charIndex) * 100);
+                setAccuracy(((charIndex + 1 - mistakes) / charIndex + 1) * 100);
                 setWpm(wpm);
             }
         }

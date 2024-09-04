@@ -3,7 +3,7 @@ import getRandomParagraph, { Difficulty } from "../utils/paragraphGenerator";
 
 const router = Router();
 
-router.get("/generate-paragraph", (req: Request, res: Response) => {
+router.get("/generate-paragraph", async (req: Request, res: Response) => {
     const allowedDifficulties: Difficulty[] = ["easy", "medium", "hard"];
 
     const difficulty = (req.query.difficulty as string) || "medium";
@@ -16,7 +16,7 @@ router.get("/generate-paragraph", (req: Request, res: Response) => {
         ? (difficulty as Difficulty)
         : "medium";
 
-    const words = getRandomParagraph({
+    const words = await getRandomParagraph({
         wordCount: 100,
         difficulty: validDifficulty,
         includeNumbers,
