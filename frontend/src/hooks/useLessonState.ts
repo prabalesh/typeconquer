@@ -194,7 +194,9 @@ export default function useLessonState(
                     ),
                     0
                 );
-                setAccuracy(((charIndex + 1 - mistakes) / charIndex + 1) * 100);
+                setAccuracy(
+                    ((charIndex + 1 - mistakes) / (charIndex + 1)) * 100
+                );
                 setWpm(wpm);
             }
         }
