@@ -122,7 +122,7 @@ function TypingDisplay({
             }}
             onClick={() => inputRef.current?.focus()}
         >
-            {!isMobile && (
+            {!isMobile && charIndex === 0 && (
                 <div className="flex justify-center gap-4">
                     <div
                         className={`p-2 ${
@@ -130,18 +130,7 @@ function TypingDisplay({
                         }`}
                         onClick={() => setTextAlign("")}
                     >
-                        <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                        </svg>
+                        <i className="fa-solid fa-align-left"></i>
                     </div>
                     <div
                         className={`p-2 ${
@@ -150,18 +139,7 @@ function TypingDisplay({
                         }`}
                         onClick={() => setTextAlign("justify-center")}
                     >
-                        <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                d="M4 6h16M6 12h12M4 18h16"
-                            />
-                        </svg>
+                        <i className="fa-solid fa-align-center"></i>
                     </div>
                     <div
                         className={`p-2 ${
@@ -170,23 +148,7 @@ function TypingDisplay({
                         }`}
                         onClick={() => setTextAlign("justify-around")}
                     >
-                        <svg
-                            width="24"
-                            height="24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                d="M4 6h16M4 12h16M4 18h16"
-                            />
-                            <path
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                d="M4 6v12M20 6v12"
-                            />
-                        </svg>
+                        <i className="fa-solid fa-align-justify"></i>
                     </div>
                 </div>
             )}

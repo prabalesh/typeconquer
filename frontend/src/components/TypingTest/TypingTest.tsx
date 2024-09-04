@@ -1,21 +1,18 @@
+import { useRef, useState, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import TypingDisplay from "./TypingDisplay";
 import TypingInput from "./TypingInput";
-
-import { useRef, useState, useCallback, useEffect } from "react";
 import TypingStats from "./TypingStats";
-import useTypingState from "../../hooks/useTypingState";
 import TypingOptions from "./TypingOptions";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../app/store";
-import { setTimeLimit } from "../../features/typing/typingSlice";
 import LowAccurarcyWarning from "./LowAccuracuWarning";
 import CongratsModal from "../CongratsModal";
 import TypingTestSummary from "./TypingTestSummary";
-
-import { setParagraph } from "../../features/typing/typingSlice";
-import { StatusType, TestResultType } from "../../types";
 import FriendListModal from "../Friends/FriendListModal";
 import StatusModal from "../Challenge/StatusModal";
+import useTypingState from "../../hooks/useTypingState";
+import { AppDispatch, RootState } from "../../app/store";
+import { setTimeLimit, setParagraph } from "../../features/typing/typingSlice";
+import { StatusType, TestResultType } from "../../types";
 
 export default function TypingTest({
     handleGenerateParagraph,
@@ -27,16 +24,11 @@ export default function TypingTest({
         useSelector((state: RootState) => state.typing);
     const user = useSelector((state: RootState) => state.user);
 
-    const [resetGameFlag, setResetGameFlag] = useState<boolean>(false);
-
     const inputRef = useRef<HTMLInputElement | null>(null);
-
+    const [resetGameFlag, setResetGameFlag] = useState<boolean>(false);
     const [bestWpm, setBestWpm] = useState<number>(0);
-
     const [modalOpen, setModalOpen] = useState(true); // for congrats modal
-
     const [openFriendsModal, setOpenFriendsModal] = useState<boolean>(false);
-
     const [statusOfTest, setStatusOfTest] = useState<StatusType>({
         message: "",
         isLoading: false,
@@ -44,6 +36,7 @@ export default function TypingTest({
         isSuccess: false,
     });
     const [openStatusModal, setOpenStatusModal] = useState<boolean>(true);
+    const [testResult, setTestResult] = useState<TestResultType | null>(null);
 
     const {
         charIndex,
@@ -57,7 +50,6 @@ export default function TypingTest({
         timesUp,
         setTimesUp,
         wpm,
-        cpm,
         setStartTime,
         isTyping,
         setIsTyping,
@@ -83,8 +75,6 @@ export default function TypingTest({
         resetGameFlag,
         handleGenerateParagraph,
     ]);
-
-    const [testResult, setTestResult] = useState<TestResultType | null>(null);
 
     const fetchBestResult = useCallback(async () => {
         const apiURL = `${
@@ -176,7 +166,6 @@ export default function TypingTest({
         wpm,
     ]);
 
-    // dynamic paragraph expansion
     const expandParagraph = useCallback(async () => {
         if (paragraph.length >= charIndex + 80) return;
 
@@ -244,11 +233,11 @@ export default function TypingTest({
     return (
         <div
             className={`max-w-7xl mx-auto p-4 text-footer-text flex flex-col items-center ${
-                timesUp && "shake"
+                timesUp ? "shake" : ""
             }`}
         >
-            {" "}
             <TypingInput inputRef={inputRef} />
+
             {highMistakeAlert && (
                 <LowAccurarcyWarning
                     resetGame={() => setResetGameFlag(true)}
@@ -258,22 +247,22 @@ export default function TypingTest({
                     ).toFixed(2)}
                 />
             )}
+
             {paragraph.length > 0 && (
                 <>
                     {timesUp &&
                         user.id &&
-                        bestWpm != 0 &&
+                        bestWpm !== 0 &&
                         !highMistakeAlert &&
                         bestWpm < wpm && (
-                            <>
-                                <CongratsModal
-                                    isOpen={modalOpen}
-                                    onClose={() => setModalOpen(false)}
-                                    wpm={wpm}
-                                    prevBestWpm={bestWpm}
-                                />
-                            </>
+                            <CongratsModal
+                                isOpen={modalOpen}
+                                onClose={() => setModalOpen(false)}
+                                wpm={wpm}
+                                prevBestWpm={bestWpm}
+                            />
                         )}
+
                     {timesUp ? (
                         <>
                             <TypingTestSummary
@@ -286,12 +275,19 @@ export default function TypingTest({
                                 errorPoints={errorPoints}
                                 practiceWords={practiceWords}
                             />
-                            {timesUp && user.id && openStatusModal && (
-                                <StatusModal
-                                    status={statusOfTest}
-                                    onClose={() => setOpenStatusModal(false)}
-                                />
-                            )}
+
+                            {timesUp &&
+                                user.id &&
+                                openStatusModal &&
+                                !highMistakeAlert && (
+                                    <StatusModal
+                                        status={statusOfTest}
+                                        onClose={() =>
+                                            setOpenStatusModal(false)
+                                        }
+                                    />
+                                )}
+
                             {testResult && (
                                 <>
                                     <button
@@ -302,6 +298,7 @@ export default function TypingTest({
                                     >
                                         Challenge a friend?
                                     </button>
+
                                     <FriendListModal
                                         isOpen={openFriendsModal}
                                         closeModal={() =>
@@ -321,32 +318,34 @@ export default function TypingTest({
                     )}
                 </>
             )}
+
             <TypingStats
                 timeLeft={timeLeft}
                 wpm={wpm}
-                cpm={cpm}
                 resetGame={() => setResetGameFlag(true)}
             />
+
             {!isTyping && (
-                <TypingOptions
-                    setTimeLimit={(newTimeLimit) => {
-                        dispatch(setTimeLimit(newTimeLimit));
-                        setResetGameFlag(true);
-                    }}
-                />
-            )}
-            {!isTyping && (
-                <div className="my-4">
-                    <p className="text-sm">
-                        <span
-                            className="bg-[var(--button-hover)] text-[var(--button-hover-text)] rounded px-1 inline-block text-center"
-                            style={{ width: "50px" }}
-                        >
-                            esc
-                        </span>{" "}
-                        - unfocus
-                    </p>
-                </div>
+                <>
+                    <TypingOptions
+                        setTimeLimit={(newTimeLimit) => {
+                            dispatch(setTimeLimit(newTimeLimit));
+                            setResetGameFlag(true);
+                        }}
+                    />
+
+                    <div className="my-4">
+                        <p className="text-sm">
+                            <span
+                                className="bg-[var(--button-hover)] text-[var(--button-hover-text)] rounded px-1 inline-block text-center"
+                                style={{ width: "50px" }}
+                            >
+                                esc
+                            </span>{" "}
+                            - unfocus
+                        </p>
+                    </div>
+                </>
             )}
         </div>
     );

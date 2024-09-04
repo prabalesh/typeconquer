@@ -8,7 +8,6 @@ const useTypingStats = (
     timeLeft: number
 ) => {
     const [wpm, setWpm] = useState<number>(0);
-    const [cpm, setCpm] = useState<number>(0);
 
     useEffect(() => {
         if (startTime && isTyping) {
@@ -19,15 +18,13 @@ const useTypingStats = (
             const totalTime = elapsedTime;
 
             if (totalTime > 0) {
-                setCpm(Math.floor(correctChars * (60 / totalTime)));
                 setWpm(Math.round((correctChars / 5 / totalTime) * 60));
             } else {
-                setCpm(0);
                 setWpm(0);
             }
         }
     }, [charIndex, mistakes, isTyping, startTime, timeLeft]);
-    return [wpm, cpm] as const;
+    return [wpm] as const;
 };
 
 export default useTypingStats;

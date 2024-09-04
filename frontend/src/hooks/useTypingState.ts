@@ -27,7 +27,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
 
     const [timeLeft, timesUp, setTimeLeft, setTimesUp, setPauseTime] =
         useTimer(isTyping);
-    const [wpm, cpm] = useTypingStats(
+    const [wpm] = useTypingStats(
         charIndex,
         mistakes,
         isTyping,
@@ -289,7 +289,6 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         timesUp,
         setTimesUp,
         wpm,
-        cpm,
         setStartTime,
         isTyping,
         setIsTyping,
