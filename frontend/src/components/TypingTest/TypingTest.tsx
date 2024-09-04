@@ -43,7 +43,7 @@ export default function TypingTest({
         isFailure: false,
         isSuccess: false,
     });
-    const [openStatusModal, setOpenStatusModal] = useState<boolean>(false);
+    const [openStatusModal, setOpenStatusModal] = useState<boolean>(true);
 
     const {
         charIndex,
@@ -108,7 +108,6 @@ export default function TypingTest({
     const submitResult = useCallback(async () => {
         if (!user.id) return;
         if (highMistakeAlert) return;
-        setOpenStatusModal(true);
         setStatusOfTest({
             message: "Submitting test report!",
             isLoading: true,
@@ -248,6 +247,7 @@ export default function TypingTest({
                 timesUp && "shake"
             }`}
         >
+            {" "}
             <TypingInput inputRef={inputRef} />
             {highMistakeAlert && (
                 <LowAccurarcyWarning
@@ -321,7 +321,6 @@ export default function TypingTest({
                     )}
                 </>
             )}
-
             <TypingStats
                 timeLeft={timeLeft}
                 wpm={wpm}
@@ -334,7 +333,6 @@ export default function TypingTest({
                     setResetGameFlag(true);
                 }}
             />
-
             <div className="my-4">
                 <p className="text-sm">
                     <span

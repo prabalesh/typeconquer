@@ -20,8 +20,6 @@ export const createTypingTestResult = async (
         return res.status(401).json({ message: "Unauthorized" });
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     const { accuracy, wpm, duration, errorPoints, text } = req.body;
 
     try {

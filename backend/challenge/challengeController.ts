@@ -192,8 +192,6 @@ export const submitChallenge = async (req: UserRequest, res: Response) => {
         return res.status(401).json({ error: "Unauthorized" });
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     try {
         const { challengeID, friendTestResultID } = req.body;
         const userID = req.user.id;

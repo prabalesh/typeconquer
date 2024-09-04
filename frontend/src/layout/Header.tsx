@@ -67,6 +67,9 @@ const Header: React.FC = () => {
                     </h1>
                 </Link>
                 <div className="flex space-x-2 sm:space-x-4 items-center">
+                    <div>
+                        <Link to={"/learningcurve"}>Learning Curve</Link>
+                    </div>
                     {user && user.id ? (
                         <>
                             {isSidebarOpen && <Sidebar />}

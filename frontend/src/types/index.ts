@@ -99,3 +99,18 @@ export interface SubmitChallengeResponse {
         winner: { _id: string };
     };
 }
+
+export interface Lesson {
+    id: number;
+    slug: string;
+    name: string;
+    words: string;
+    mode: "introduction" | "practice";
+}
+
+export interface Module {
+    id: number;
+    slug: string;
+    name: string;
+    lessons: Lesson[];
+}

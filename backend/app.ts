@@ -6,6 +6,7 @@ import authRoutes from "./auth/authRoutes";
 import friendsRoutes from "./friendship/friendshipRoutes";
 import challeneRoutes from "./challenge/challengeRoutes";
 import notificationRoutes from "./notifications/notificationRoutes";
+import learningRoutes from "./learningcurve/learningRoutes";
 
 import typingTestsRoutes from "./typingtests/typingTestsRoutes";
 import cookieParser from "cookie-parser";
@@ -34,5 +35,6 @@ app.use("/api/typingtests", typingTestsRoutes);
 app.use("/api/friends", friendsRoutes);
 app.use("/api/challenges", challeneRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/learning", learningRoutes);
 
 export default app;

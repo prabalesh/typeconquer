@@ -13,6 +13,8 @@ import TypingTestResults from "./pages/TypingTestResults";
 import Challenge from "./pages/Challenge";
 import ChallengesPage from "./pages/ChallengesPage";
 import NotFound from "./pages/NotFound";
+import LearningCurve from "./pages/LearingCurve";
+import LessonPage from "./pages/LessonPage";
 
 function App() {
     // to fetch user data
@@ -43,6 +45,11 @@ function App() {
                         element={<Challenge />}
                     />
                     <Route path="/challenges" element={<ChallengesPage />} />
+                    <Route path="/learningcurve" element={<LearningCurve />} />
+                    <Route
+                        path="/learningcurve/modules/:moduleSlug/lessons/:lessonSlug"
+                        element={<LessonPage />}
+                    />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>
