@@ -124,6 +124,7 @@ export default function Challenge() {
         maxCharIndex,
         setTimesUp,
         resetTypingState,
+        isTyping,
     } = useTypingState(inputRef);
 
     const resetChallenge = useCallback(() => {
@@ -414,6 +415,7 @@ export default function Challenge() {
                         charIndex={charIndex}
                         isCharCorrectWrong={isCharCorrectWrong}
                         inputRef={inputRef}
+                        isTyping={isTyping}
                     />
                 ))}
 
