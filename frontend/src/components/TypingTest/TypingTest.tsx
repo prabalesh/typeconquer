@@ -314,6 +314,7 @@ export default function TypingTest({
                             charIndex={charIndex}
                             isCharCorrectWrong={isCharCorrectWrong}
                             inputRef={inputRef}
+                            isTyping={isTyping}
                         />
                     )}
                 </>

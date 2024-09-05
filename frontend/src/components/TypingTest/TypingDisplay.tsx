@@ -6,10 +6,12 @@ function TypingDisplay({
     charIndex,
     isCharCorrectWrong,
     inputRef,
+    isTyping,
 }: {
     charIndex: number;
     isCharCorrectWrong: string[];
     inputRef: React.RefObject<HTMLInputElement>;
+    isTyping: boolean;
 }) {
     const [isMobile, setIsMobile] = useState(false);
     const [lineLength, setLineLength] = useState(60);
@@ -122,7 +124,7 @@ function TypingDisplay({
             }}
             onClick={() => inputRef.current?.focus()}
         >
-            {!isMobile && charIndex === 0 && (
+            {!isMobile && !isTyping && (
                 <div className="flex justify-center gap-4">
                     <div
                         className={`p-2 ${

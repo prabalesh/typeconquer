@@ -25,14 +25,14 @@ export function useGoogleLogin() {
             if (data.success && data["accessToken"]) {
                 const decodedUserData = jwtDecode<{
                     id: string;
-                    email: string;
+                    username: string;
                     name: string;
                 }>(data["accessToken"]);
 
                 dispatch(
                     setUser({
                         id: decodedUserData["id"],
-                        email: decodedUserData["email"],
+                        username: decodedUserData["username"],
                         name: decodedUserData["name"],
                     })
                 );

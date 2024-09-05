@@ -45,7 +45,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         const content = paragraph.slice(0, maxCharIndex + 1).join("");
         const points = [...errorPoints];
 
-        const words = content.split(" ");
+        const words = content.split(/\s+/); // Split by whitespace including non-breaking spaces
 
         const filteredWords = words.filter((word, wordIndex) => {
             const startIdx = content.indexOf(
@@ -71,7 +71,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
     }, [timesUp, findPracticeWords]);
 
     const handleCtrlBackspace = useCallback(() => {
-        if (charIndex != charIndexAfterSpace) {
+        if (charIndex !== charIndexAfterSpace) {
             setIsCharCorrectWrong((prevState) => {
                 for (let i = charIndexAfterSpace; i < charIndex; i++) {
                     prevState[i] = "";
@@ -82,14 +82,13 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         }
     }, [charIndex, charIndexAfterSpace]);
 
-    // handling backspace
     const handleBackSpace = useCallback(() => {
         setCharIndex((prevCharIndex) => {
             setIsCharCorrectWrong((prevState) => {
                 const newState = [...prevState];
                 if (
-                    newState[prevCharIndex - 1] == "text-red-500" ||
-                    newState[prevCharIndex - 1] == "bg-red-500"
+                    newState[prevCharIndex - 1] === "text-red-500" ||
+                    newState[prevCharIndex - 1] === "bg-red-500"
                 ) {
                     setMistakes((prevMistakes) =>
                         prevMistakes - 1 < 0 ? 0 : prevMistakes - 1
@@ -102,10 +101,9 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
         });
     }, []);
 
-    // validating input
     const handleCharInput = useCallback(
         (typedChar: string, currentChar: string) => {
-            if (typedChar == currentChar) {
+            if (typedChar === currentChar) {
                 setIsCharCorrectWrong((prevState) => {
                     const newState = [...prevState];
                     newState[charIndex] = "text-green-500";
@@ -115,7 +113,7 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
                 setMistakes((prevMistakes) => prevMistakes + 1);
                 setIsCharCorrectWrong((prevState) => {
                     const newState = [...prevState];
-                    if (!errorPoints.has(charIndex) && currentChar != " ") {
+                    if (!errorPoints.has(charIndex) && currentChar !== " ") {
                         setErrorPoints((prevErrorPoints) => {
                             const newSet = new Set(prevErrorPoints);
                             newSet.add(charIndex);
@@ -144,11 +142,12 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
                 } else {
                     handleBackSpace();
                 }
-            }
-            // Handle valid alphanumeric and symbol inputs
-            else if (
+            } else if (key === "Shift" || key === "Control" || key === "Alt") {
+                // Ignore Shift, Control, and Alt keys
+                return;
+            } else if (
                 !ctrlKey &&
-                /^[a-zA-Z0-9 `~!@#$%^&*()-_=+[\]{};:'",.<>?/\\|]$/.test(key)
+                /^[\p{L}\p{N}\p{P}\p{S}\p{Zs}]+$/u.test(key) // Unicode regex for letters, numbers, punctuation, symbols, and spaces
             ) {
                 if (ctrlKey) return;
                 if (paragraph.length > charIndex && timeLeft >= 0 && !timesUp) {
@@ -199,14 +198,11 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
 
             const handleInput = () => {
                 const currentValue = inputElement.value;
-                console.log("current value:", currentValue);
 
                 if (currentValue.length < previousValue.length) {
-                    console.log("baskspace");
                     handleInputChange("Backspace", false);
                 } else {
                     const lastChar = currentValue[currentValue.length - 1];
-                    console.log("Last char: " + lastChar);
                     handleInputChange(lastChar, false);
                 }
 
@@ -237,9 +233,9 @@ const useTypingState = (inputRef: React.RefObject<HTMLInputElement>) => {
 
     useEffect(() => {
         if (
-            charIndex != 0 &&
-            paragraph[charIndex - 1] === " " &&
-            paragraph[charIndex] !== " "
+            charIndex !== 0 &&
+            /\s/.test(paragraph[charIndex - 1]) &&
+            !/\s/.test(paragraph[charIndex])
         ) {
             setCharIndexAfterSpace(charIndex);
         }

@@ -130,7 +130,7 @@ const Header: React.FC = () => {
                                             <p className="text-sm font-semibold truncate">
                                                 {user.name}
                                             </p>
-                                            <p>@{user.email}</p>
+                                            <p>@{user.username}</p>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2 px-2 py-2 border-b">

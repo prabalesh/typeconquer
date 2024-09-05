@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import homeRoutes from "./home/homeRoutes";
-import authRoutes from "./auth/authRoutes";
+import authRoutes from "./auth/auth.routes";
 import friendsRoutes from "./friendship/friendshipRoutes";
 import challeneRoutes from "./challenge/challengeRoutes";
 import notificationRoutes from "./notifications/notificationRoutes";

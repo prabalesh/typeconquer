@@ -1,37 +1,35 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
-import User from "../auth/UserModel";
-
-interface UserPayload {
-    id: string;
-    email: string;
-    name: string;
-}
+import User, { IUser } from "../auth/user.model";
 
 interface AuthenticatedRequest extends Request {
-    user?: UserPayload;
-}
-interface User {
-    id: string;
-    name: string;
-    email: string;
+    user?: {
+        id: string;
+        username: string;
+        name: string;
+    };
 }
 
-const verifyToken = async (token: string, secret: string) => {
+interface JWTPayload {
+    id: string;
+    username?: string;
+    name?: string;
+}
+
+const verifyToken = async (
+    token: string,
+    secret: string
+): Promise<JWTPayload> => {
     try {
-        const decoded = jwt.verify(token, secret);
-        if (typeof decoded === "object" && "id" in decoded) {
+        const decoded = jwt.verify(token, secret) as JWTPayload;
+        if (decoded && decoded.id) {
             return decoded;
         }
         throw new Error("Invalid token");
     } catch {
         throw new Error("Token expired or invalid");
     }
-};
-
-const generateToken = (user: User, secret: string, expiresIn: string) => {
-    return jwt.sign(user, secret, { expiresIn });
 };
 
 const authenticateToken = async (
@@ -43,46 +41,56 @@ const authenticateToken = async (
     const refreshToken = req.cookies["refreshToken"];
 
     try {
+        // verify access token
         if (accessToken) {
             const decoded = await verifyToken(accessToken, config.JWT_SECRET);
-            const user = await User.findById(decoded["id"]);
+            const user = (await User.findById(decoded.id)) as IUser | null;
+
+            // checks whether the user is present or not
             if (!user) {
                 throw new Error("User not found");
             }
+
             req.user = {
                 id: user._id.toString(),
+                username: user.username,
                 name: user.name,
-                email: user.email,
             };
+
             user.lastLogin = new Date();
             await user.save();
+
             return next();
         }
 
-        // Handle case where access token is missing but refresh token is present
+        // if access is invalid or not present verify refresh token
         if (refreshToken) {
             const decodedRefreshToken = await verifyToken(
                 refreshToken,
                 config.JWT_REFRESH_SECRET
             );
-            const userDoc = await User.findById(decodedRefreshToken.id);
+            const userDoc = (await User.findById(
+                decodedRefreshToken.id
+            )) as IUser | null;
+
             if (!userDoc) {
                 return res.status(403).json({
                     success: false,
                     message: "Invalid refresh token",
                 });
             }
+
             const user = {
-                id: userDoc._id.toString(),
-                email: userDoc.email,
+                id: userDoc._id.toString(), // Convert ObjectId to string
+                username: userDoc.username,
                 name: userDoc.name,
             };
 
-            const newAccessToken = generateToken(
-                user,
-                config.JWT_SECRET,
-                "15min"
-            );
+            // generates new access token if old is expired
+            const newAccessToken = jwt.sign(user, config.JWT_SECRET, {
+                expiresIn: "15min",
+            });
+
             userDoc.lastLogin = new Date();
             await userDoc.save();
 
@@ -95,9 +103,10 @@ const authenticateToken = async (
 
             req.user = {
                 id: userDoc._id.toString(),
+                username: user.username,
                 name: user.name,
-                email: user.email,
             };
+
             return next();
         }
 
@@ -107,8 +116,9 @@ const authenticateToken = async (
         });
     } catch (error) {
         console.log(error);
-        return res.status(403);
-        // .json({success: false, message: error.message});
+        return res
+            .status(403)
+            .json({ success: false, message: "Invalid tokens" });
     }
 };
 

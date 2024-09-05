@@ -1,11 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+import generateUsername from "../utils/generateUsername";
 
-const generateUsername = (name: string) => {
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    return `${name.replace(/\s+/g, "").toLowerCase()}${randomNum}`;
-};
+export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    email: string;
+    username: string;
+    password?: string;
+    googleID?: string;
+    lastLogin: Date;
+}
 
-const userSchema = new mongoose.Schema(
+const userSchema: Schema<IUser> = new Schema(
     {
         name: {
             type: String,
@@ -22,7 +28,11 @@ const userSchema = new mongoose.Schema(
         },
         username: {
             type: String,
+            required: true,
             unique: true,
+        },
+        password: {
+            type: String,
         },
         googleID: {
             type: String,
@@ -53,4 +63,4 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model<IUser>("User", userSchema);
