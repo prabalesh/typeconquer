@@ -11,7 +11,7 @@ const Register: React.FC = () => {
 
     const user = useSelector((state: RootState) => state.user);
     useEffect(() => {
-        if (user && user.email) {
+        if (user && user.id) {
             navigate("/");
         }
     }, [navigate, user]);
