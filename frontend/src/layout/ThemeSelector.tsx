@@ -55,7 +55,7 @@ function ThemeSelector({ border }: { border: boolean }) {
                 onClick={toggleDropdown}
                 className={`${
                     border &&
-                    "px-4 py-2 border rounded-3xl border-[var(--border-color)] bg-[var(--button-bg)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
+                    "px-2 py-1 rounded-3xl border border-[var(--border-color)] bg-[var(--button-bg)] hover:bg-[var(--button-hover)] hover:text-[var(--button-hover-text)]"
                 } text-[var(--button-text)] text-sm sm:text-base`}
             >
                 <i className="fa-solid fa-palette"></i>{" "}

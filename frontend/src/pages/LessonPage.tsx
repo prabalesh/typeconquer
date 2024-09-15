@@ -39,7 +39,7 @@ function LessonPage() {
         <div className="flex gap-4 justify-center w-[60vw] my-4">
             {previousLessonSlug && (
                 <Link
-                    to={`/learningcurve/modules/${moduleSlug}/lessons/${previousLessonSlug}`}
+                    to={`/learning/modules/${moduleSlug}/lessons/${previousLessonSlug}`}
                     className="bg-gray-300 text-slate-900 hover:bg-gray-400 hover:text-slate-100 px-4 py-1 rounded-3xl "
                 >
                     Previous
@@ -47,7 +47,7 @@ function LessonPage() {
             )}
             {nextLessonSlug && (
                 <Link
-                    to={`/learningcurve/modules/${moduleSlug}/lessons/${nextLessonSlug}`}
+                    to={`/learning/modules/${moduleSlug}/lessons/${nextLessonSlug}`}
                     className="bg-green-200 text-slate-900 hover:bg-green-400 hover:text-slate-100 px-4 py-1 rounded-3xl "
                 >
                     Next

@@ -68,7 +68,7 @@ const Header: React.FC = () => {
                 </Link>
                 <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
                     <div>
-                        <Link to={"/learningcurve"}>Learning Curve</Link>
+                        <Link to={"/learning"}>Learning</Link>
                     </div>
                     {user && user.id ? (
                         <>

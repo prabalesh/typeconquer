@@ -25,7 +25,7 @@ function LearningCurve() {
                                     className="p-2 bg-[--highlighted-color] hover:bg-[--button-hover] hover:text-[--button-hover-text] rounded-md"
                                 >
                                     <Link
-                                        to={`/learningcurve/modules/${module.slug}/lessons/${lesson.slug}`}
+                                        to={`/learning/modules/${module.slug}/lessons/${lesson.slug}`}
                                     >
                                         <span
                                             className={`font-medium ${

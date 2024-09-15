@@ -45,9 +45,9 @@ function App() {
                         element={<Challenge />}
                     />
                     <Route path="/challenges" element={<ChallengesPage />} />
-                    <Route path="/learningcurve" element={<LearningCurve />} />
+                    <Route path="/learning" element={<LearningCurve />} />
                     <Route
-                        path="/learningcurve/modules/:moduleSlug/lessons/:lessonSlug"
+                        path="/learning/modules/:moduleSlug/lessons/:lessonSlug"
                         element={<LessonPage />}
                     />
 
