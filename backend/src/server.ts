@@ -1,6 +1,6 @@
-import app from "./backend/app";
-import { config } from "./backend/config/config";
-import connectDB from "./backend/db/dbConn";
+import app from "./app";
+import { config } from "./config/config";
+import connectDB from "./db/dbConn";
 
 const startServer = async () => {
     connectDB();
