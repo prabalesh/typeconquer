@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
-import generateUsername from "../../src/utils/generateUsername";
+import generateUsername from "../../utils/generateUsername";
 
 export interface IUser extends Document {
     _id: mongoose.Types.ObjectId;

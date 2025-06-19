@@ -4,7 +4,7 @@ import {
     getBestWPM,
     getTypingTestResult,
 } from "./typingTestsControllers";
-import authenticateToken from "../../src/middlewares/authMiddleware";
+import authenticateToken from "../../middlewares/authMiddleware";
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authenticateToken from "../../src/middlewares/authMiddleware";
+import authenticateToken from "../../middlewares/authMiddleware";
 import {
     createChallenge,
     declineChallenge,

@@ -3,7 +3,7 @@ import {
     getUserNotifications,
     markNotificationAsRead,
 } from "./notificationController";
-import authenticateToken from "../../src/middlewares/authMiddleware";
+import authenticateToken from "../../middlewares/authMiddleware";
 
 const router = Router();
 
