@@ -1,5 +1,5 @@
 import mongoose, { Document, Types } from "mongoose";
-import Notification from "../../src/notifications/notificationModel";
+import Notification from "../notifications/notificationModel";
 import User from "../auth/user.model";
 
 export interface IChallenge extends Document {

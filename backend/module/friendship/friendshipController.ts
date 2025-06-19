@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Friendship from "./FriendshipModel";
 import User from "../auth/user.model";
-import Notification from "../../src/notifications/notificationModel";
+import Notification from "../notifications/notificationModel";
 
 interface UserPayload {
     id: string;

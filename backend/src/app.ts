@@ -5,7 +5,7 @@ import homeRoutes from "../module/home/homeRoutes";
 import authRoutes from "../module/auth/auth.routes";
 import friendsRoutes from "../module/friendship/friendshipRoutes";
 import challeneRoutes from "../module/challenge/challengeRoutes";
-import notificationRoutes from "./notifications/notificationRoutes";
+import notificationRoutes from "../module/notifications/notificationRoutes";
 import learningRoutes from "../module/learning/learningRoutes";
 
 import typingTestsRoutes from "./typingtests/typingTestsRoutes";
