@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Friendship from "./FriendshipModel";
-import User from "../auth/user.model";
+import User from "../../module/auth/user.model";
 import Notification from "../notifications/notificationModel";
 
 interface UserPayload {
