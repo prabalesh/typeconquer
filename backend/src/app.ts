@@ -4,7 +4,7 @@ import cors from "cors";
 import homeRoutes from "./home/homeRoutes";
 import authRoutes from "../module/auth/auth.routes";
 import friendsRoutes from "./friendship/friendshipRoutes";
-import challeneRoutes from "./challenge/challengeRoutes";
+import challeneRoutes from "../module/challenge/challengeRoutes";
 import notificationRoutes from "./notifications/notificationRoutes";
 import learningRoutes from "./learningcurve/learningRoutes";
 
