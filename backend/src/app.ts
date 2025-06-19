@@ -6,7 +6,7 @@ import authRoutes from "../module/auth/auth.routes";
 import friendsRoutes from "../module/friendship/friendshipRoutes";
 import challeneRoutes from "../module/challenge/challengeRoutes";
 import notificationRoutes from "./notifications/notificationRoutes";
-import learningRoutes from "./learningcurve/learningRoutes";
+import learningRoutes from "../module/learning/learningRoutes";
 
 import typingTestsRoutes from "./typingtests/typingTestsRoutes";
 import cookieParser from "cookie-parser";
