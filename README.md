@@ -30,8 +30,7 @@ TypeConquer is a comprehensive typing practice platform designed to help users i
 ---
 
 ## 🧩 Features
-
-<table>
+<div align="center"><table>
 <tr>
 <td width="50%">
 
@@ -73,6 +72,7 @@ TypeConquer is a comprehensive typing practice platform designed to help users i
 </td>
 </tr>
 </table>
+</div>
 
 ---
 
