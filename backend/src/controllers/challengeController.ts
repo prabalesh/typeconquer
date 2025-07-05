@@ -6,8 +6,8 @@ import {
     submitChallengeService,
     declineChallengeService,
     myAllChallengesService,
-} from "../services/challengeService.js";
-import { UserRequest } from "../types/index.js";
+} from "../services/challengeService";
+import { UserRequest } from "../types/index";
 
 export async function createChallenge(req: UserRequest, res: Response) {
     if(req.user === undefined || !req.user.id) {

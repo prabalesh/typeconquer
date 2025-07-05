@@ -1,7 +1,7 @@
-import Challenge, { IChallenge } from "../models/challengeModel.js";
-import TypingTestResult from "../models/testResultModel.js";
-import Friendship from "../models/friendshipModel.js";
-import Notification from "../models/notificationModel.js";
+import Challenge, { IChallenge } from "../models/challengeModel";
+import TypingTestResult from "../models/testResultModel";
+import Friendship from "../models/friendshipModel";
+import Notification from "../models/notificationModel";
 import { FilterQuery, Types } from "mongoose";
 
 export async function createChallengeService(challengerID: Types.ObjectId, challengedFriendID: Types.ObjectId, typingTestResultID: Types.ObjectId) {
