@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import ModuleModel from "./moduleModel";
-import LessonModel from "./lessonModel";
+import ModuleModel from "../models/moduleModel";
+import LessonModel from "../models/lessonModel";
 
 export const getAllModules = async (req: Request, res: Response) => {
     try {

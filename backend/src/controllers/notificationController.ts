@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Notification from "./notificationModel";
+import Notification from "../models/notificationModel";
 
 interface UserPayload {
     id: string;

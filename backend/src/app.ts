@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors";
 
-import homeRoutes from "./module/home/homeRoutes";
-import authRoutes from "./module/auth/authRoutes";
-import friendsRoutes from "./module/friendship/friendshipRoutes";
-import challeneRoutes from "./module/challenge/challengeRoutes";
-import notificationRoutes from "./module/notifications/notificationRoutes";
-import learningRoutes from "./module/learning/learningRoutes";
+import homeRoutes from "./routes/homeRoutes";
+import authRoutes from "./routes/authRoutes";
+import friendsRoutes from "./routes/friendshipRoutes";
+import challeneRoutes from "./routes/challengeRoutes";
+import notificationRoutes from "./routes/notificationRoutes";
+import learningRoutes from "./routes/learningRoutes";
 
-import typingTestsRoutes from "./module/typingtests/typingTestsRoutes";
+import typingTestsRoutes from "./routes/typingTestsRoutes";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config";
 

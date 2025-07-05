@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authenticateToken from "../../middlewares/authMiddleware";
+import authenticateToken from "../middlewares/authMiddleware";
 import {
     createChallenge,
     declineChallenge,
@@ -7,7 +7,7 @@ import {
     getPendingChallenges,
     myAllChallenges,
     submitChallenge,
-} from "./challengeController";
+} from "../controllers/challengeController";
 
 const router = Router();
 

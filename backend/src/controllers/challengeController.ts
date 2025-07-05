@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import Challenge, { IChallenge } from "./challengeModel";
-import TypingTestResult from "../typingtests/testResultModel";
-import Friendship from "../friendship/friendshipModel";
-import Notification from "../notifications/notificationModel";
+import Challenge, { IChallenge } from "../models/challengeModel";
+import TypingTestResult from "../models/testResultModel";
+import Friendship from "../models/friendshipModel";
+import Notification from "../models/notificationModel";
 
 interface UserPayload {
     id: string;

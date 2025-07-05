@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import oauthClient from "../../config/oauth.config";
-import { config } from "../../config/config";
-import User from "./userModel";
-import { UserRequest } from "../../types";
-import generateUsername from "../../utils/generateUsername";
+import oauthClient from "../config/oauth.config";
+import { config } from "../config/config";
+import User from "../models/userModel";
+import { UserRequest } from "../types";
+import generateUsername from "../utils/generateUsername";
 
 export const authenticateUser = async (req: UserRequest, res: Response) => {
     try {

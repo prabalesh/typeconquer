@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import getRandomParagraph, { Difficulty } from "../../utils/paragraphGenerator";
+import getRandomParagraph, { Difficulty } from "../utils/paragraphGenerator";
 
 const router = Router();
 

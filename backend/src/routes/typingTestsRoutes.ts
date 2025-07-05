@@ -3,8 +3,8 @@ import {
     createTypingTestResult,
     getBestWPM,
     getTypingTestResult,
-} from "./typingTestsControllers";
-import authenticateToken from "../../middlewares/authMiddleware";
+} from "../controllers/typingTestsControllers";
+import authenticateToken from "../middlewares/authMiddleware";
 
 const router = Router();
 

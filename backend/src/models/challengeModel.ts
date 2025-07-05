@@ -1,6 +1,6 @@
 import mongoose, { Document, Types } from "mongoose";
-import Notification from "../notifications/notificationModel";
-import User from "../auth/userModel";
+import Notification from "./notificationModel";
+import User from "./userModel";
 
 export interface IChallenge extends Document {
     challenger: Types.ObjectId;

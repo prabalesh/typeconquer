@@ -6,8 +6,8 @@ import {
     removeFriend,
     acceptFriendRequest,
     rejectFriendRequest,
-} from "./friendshipController";
-import authenticateToken from "../../middlewares/authMiddleware";
+} from "../controllers/friendshipController";
+import authenticateToken from "../middlewares/authMiddleware";
 
 const router = express.Router();
 

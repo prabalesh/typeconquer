@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { authenticateUser, googleAuthLogin, logout } from "./authController";
-import authenticateToken from "../../middlewares/authMiddleware";
+import { authenticateUser, googleAuthLogin, logout } from "../controllers/authController";
+import authenticateToken from "../middlewares/authMiddleware";
 
 const router = Router();
 
