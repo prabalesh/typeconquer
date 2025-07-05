@@ -1,16 +1,8 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Friendship from "../models/friendshipModel";
 import User from "../models/userModel";
 import Notification from "../models/notificationModel";
-
-interface UserPayload {
-    id: string;
-    email: string;
-    name: string;
-}
-interface UserRequest extends Request {
-    user?: UserPayload;
-}
+import { UserRequest } from "../types";
 
 export const getAllFriends = async (req: UserRequest, res: Response) => {
     if (!req.user) {
@@ -34,7 +26,7 @@ export const getAllFriends = async (req: UserRequest, res: Response) => {
             .populate("receiver", "_id name username lastLogin");
 
         const friends = friendships.map((friendship) =>
-            friendship.requester._id.toString() === userID
+            friendship.requester._id === userID
                 ? friendship.receiver
                 : friendship.requester
         );
@@ -64,7 +56,7 @@ export const sendFriendRequest = async (req: UserRequest, res: Response) => {
     const userID = req.user.id;
 
     try {
-        if (user._id.toString() === userID) {
+        if (user._id === userID) {
             return res.json({
                 success: false,
                 message: "Can't send friend request to yourself.",
