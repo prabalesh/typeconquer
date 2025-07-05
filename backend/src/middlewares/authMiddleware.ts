@@ -1,15 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import {Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import User, { IUser } from "../models/userModel";
-
-interface AuthenticatedRequest extends Request {
-    user?: {
-        id: string;
-        username: string;
-        name: string;
-    };
-}
+import { UserRequest } from "../types";
 
 interface JWTPayload {
     id: string;
@@ -33,7 +26,7 @@ const verifyToken = async (
 };
 
 const authenticateToken = async (
-    req: AuthenticatedRequest,
+    req: UserRequest,
     res: Response,
     next: NextFunction
 ) => {
@@ -52,7 +45,7 @@ const authenticateToken = async (
             }
 
             req.user = {
-                id: user._id.toString(),
+                id: user._id,
                 username: user.username,
                 name: user.name,
             };
@@ -102,7 +95,7 @@ const authenticateToken = async (
             });
 
             req.user = {
-                id: userDoc._id.toString(),
+                id: userDoc._id,
                 username: user.username,
                 name: user.name,
             };

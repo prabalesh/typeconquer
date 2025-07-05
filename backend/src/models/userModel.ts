@@ -11,17 +11,17 @@ export interface IUser extends Document {
     lastLogin: Date;
 }
 
-const userSchema: Schema<IUser> = new Schema(
+const userSchema = new Schema<IUser>(
     {
         name: {
             type: String,
-            required: [true, "name is required"],
+            required: true,
             trim: true,
-            minlength: [2, "Name must be at least 2 characters long"],
+            minlength: 2,
         },
         email: {
             type: String,
-            required: [true, "email is required"],
+            required: true,
             trim: true,
             lowercase: true,
             unique: true,
@@ -31,12 +31,10 @@ const userSchema: Schema<IUser> = new Schema(
             required: true,
             unique: true,
         },
-        password: {
-            type: String,
-        },
+        password: String,
         googleID: {
             type: String,
-            required: [true, "googleID is required"],
+            required: true,
             unique: true,
         },
         lastLogin: {

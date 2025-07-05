@@ -111,4 +111,4 @@ challengeSchema.methods.determineWinner = async function () {
     });
 };
 
-export default mongoose.model("Challenge", challengeSchema);
+export default mongoose.model<IChallenge>("Challenge", challengeSchema);
