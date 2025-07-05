@@ -8,6 +8,7 @@ import {
     rejectFriendRequestService,
 } from "../services/friendshipService";
 import { UserRequest } from "../types";
+import { FriendshipDto, RemoveFriendShipDto, SendFriendRequestDto } from "../dtos/friendshipDtos";
 
 export const getAllFriends = async (req: UserRequest, res: Response) => {
     if (!req.user) return res.status(401);
@@ -21,7 +22,7 @@ export const getAllFriends = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const sendFriendRequest = async (req: UserRequest, res: Response) => {
+export const sendFriendRequest = async (req: UserRequest<object, unknown, SendFriendRequestDto>, res: Response) => {
     if (!req.user) return res.status(401);
     const { username } = req.body;
 
@@ -46,7 +47,7 @@ export const getPendingRequests = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const removeFriend = async (req: UserRequest, res: Response) => {
+export const removeFriend = async (req: UserRequest<object, unknown, RemoveFriendShipDto>, res: Response) => {
     if (!req.user) return res.status(401);
     const { unfriend } = req.body;
 
@@ -59,7 +60,7 @@ export const removeFriend = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const acceptFriendRequest = async (req: UserRequest, res: Response) => {
+export const acceptFriendRequest = async (req: UserRequest<object, unknown, FriendshipDto>, res: Response) => {
     if (!req.user) return res.status(401);
     const { friendshipID, requesterID } = req.body;
 
@@ -72,7 +73,7 @@ export const acceptFriendRequest = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const rejectFriendRequest = async (req: UserRequest, res: Response) => {
+export const rejectFriendRequest = async (req: UserRequest<object, unknown, FriendshipDto>, res: Response) => {
     if (!req.user) return res.status(401);
     const { friendshipID, requesterID } = req.body;
 

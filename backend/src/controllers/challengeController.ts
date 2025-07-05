@@ -8,8 +8,9 @@ import {
     myAllChallengesService,
 } from "../services/challengeService";
 import { UserRequest } from "../types/index";
+import { CreateChallengeDto, DeclineChallengeDto, GetChallengeDto, SubmitChallengeDto } from "../dtos/challengeDtos";
 
-export async function createChallenge(req: UserRequest, res: Response) {
+export async function createChallenge(req: UserRequest<object, unknown, CreateChallengeDto>, res: Response) {
     if(req.user === undefined || !req.user.id) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
@@ -38,7 +39,7 @@ export async function getPendingChallenges(req: UserRequest, res: Response) {
     }
 }
 
-export async function getChallenge(req: UserRequest, res: Response) {
+export async function getChallenge(req: UserRequest<object, unknown, GetChallengeDto>, res: Response) {
     if(req.user === undefined || !req.user.id) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
@@ -51,7 +52,7 @@ export async function getChallenge(req: UserRequest, res: Response) {
     }
 }
 
-export async function submitChallenge(req: UserRequest, res: Response) {
+export async function submitChallenge(req: UserRequest<object, unknown, SubmitChallengeDto>, res: Response) {
     if(req.user === undefined || !req.user.id) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }
@@ -68,7 +69,7 @@ export async function submitChallenge(req: UserRequest, res: Response) {
     }
 }
 
-export async function declineChallenge(req: UserRequest, res: Response) {
+export async function declineChallenge(req: UserRequest<object, unknown, DeclineChallengeDto>, res: Response) {
     if(req.user === undefined || !req.user.id) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
     }

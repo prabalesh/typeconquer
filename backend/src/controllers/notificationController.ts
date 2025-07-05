@@ -4,6 +4,7 @@ import {
     getUserNotificationsService,
     markNotificationAsReadService,
 } from "../services/notificationService";
+import { MarkNotificationReadDto } from "../dtos/notificationDtos";
 
 export const getUserNotifications = async (req: UserRequest, res: Response) => {
     if (!req.user) return res.status(401);
@@ -20,7 +21,7 @@ export const getUserNotifications = async (req: UserRequest, res: Response) => {
     }
 };
 
-export const markNotificationAsRead = async (req: UserRequest, res: Response) => {
+export const markNotificationAsRead = async (req: UserRequest<object, unknown, MarkNotificationReadDto>, res: Response) => {
     if (!req.user) return res.status(401);
 
     try {

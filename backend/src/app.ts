@@ -8,7 +8,7 @@ import challeneRoutes from "./routes/challengeRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import learningRoutes from "./routes/learningRoutes";
 
-import typingTestsRoutes from "./routes/typingTestsRoutes";
+import typingTestsRoutes from "./routes/typingTestRoutes";
 import cookieParser from "cookie-parser";
 import { config } from "./config/config";
 
