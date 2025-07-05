@@ -3,19 +3,14 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/config";
 import User, { IUser } from "../models/userModel";
 import { UserRequest } from "../types";
-
-interface JWTPayload {
-    id: string;
-    username?: string;
-    name?: string;
-}
+import { UserPayload } from "../types/user";
 
 const verifyToken = async (
     token: string,
     secret: string
-): Promise<JWTPayload> => {
+): Promise<UserPayload> => {
     try {
-        const decoded = jwt.verify(token, secret) as JWTPayload;
+        const decoded = jwt.verify(token, secret) as UserPayload;
         if (decoded && decoded.id) {
             return decoded;
         }
@@ -37,21 +32,13 @@ const authenticateToken = async (
         // verify access token
         if (accessToken) {
             const decoded = await verifyToken(accessToken, config.JWT_SECRET);
-            const user = (await User.findById(decoded.id)) as IUser | null;
 
-            // checks whether the user is present or not
-            if (!user) {
-                throw new Error("User not found");
-            }
 
             req.user = {
-                id: user._id,
-                username: user.username,
-                name: user.name,
+                id: decoded.id,
+                username: decoded.username,
+                name: decoded.name,
             };
-
-            user.lastLogin = new Date();
-            await user.save();
 
             return next();
         }
@@ -74,7 +61,7 @@ const authenticateToken = async (
             }
 
             const user = {
-                id: userDoc._id.toString(), // Convert ObjectId to string
+                id: userDoc._id,
                 username: userDoc.username,
                 name: userDoc.name,
             };
