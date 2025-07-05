@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Friendship from "./FriendshipModel";
+import Friendship from "./friendshipModel";
 import User from "../auth/user.model";
 import Notification from "../notifications/notificationModel";
 

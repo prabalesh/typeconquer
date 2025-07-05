@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import TypingTestResult from "./TestResultModel";
+import TypingTestResult from "./testResultModel";
 import BestTypingTestResult from "./bestTypingTestResult";
-import TestResultModel from "./TestResultModel";
+import TestResultModel from "./testResultModel";
 
 interface UserPayload {
     id: string;
