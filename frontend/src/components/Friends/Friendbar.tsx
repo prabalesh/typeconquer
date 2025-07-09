@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import FriendRequestModal from "./FriendRequestModal";
 import PendingRequestsModal from "./PendingRequestModal";
 import Spinner from "../Spinner";
-import formatRelativeTime from "../../utils/relativeTime";
 import { toast } from "react-toastify";
-import UserAvatar from "../User/UserAvatar";
+import { Friend } from "../../types";
+import FriendItem from "./FriendItem";
 
 export interface PendingRequestType {
     _id: string;
@@ -18,12 +18,6 @@ export interface PendingRequestType {
     };
 }
 
-type Friend = {
-    _id: string;
-    name: string;
-    username: string;
-    lastLogin: string;
-};
 
 function Friendbar() {
     const [openFrndReqModal, setOpenFrndReqModal] = useState(false);
@@ -162,27 +156,7 @@ function Friendbar() {
                             {friendList.length > 0 ? (
                                 <ul className="flex flex-col gap-1">
                                     {friendList.map((friend, i) => (
-                                        <li
-                                            key={i}
-                                            className="w-full p-2 rounded-xl hover:bg-[--button-hover] hover:text-[--button-hover-text] border"
-                                        >
-                                            <div className="flex justify-between text-xs">
-                                                <div className="flex gap-2">
-                                                    <UserAvatar username={friend.name} />
-                                                    <div className="text-xs truncate">
-                                                        <p>{friend.name}</p>
-                                                        <p>
-                                                            @{friend.username}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="text-xs truncate">
-                                                    {formatRelativeTime(
-                                                        friend.lastLogin
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </li>
+                                        <FriendItem friend={friend} key={i} />
                                     ))}
                                 </ul>
                             ) : (

@@ -114,3 +114,10 @@ export interface Module {
     name: string;
     lessons: Lesson[];
 }
+
+export interface Friend {
+    _id: string;
+    name: string;
+    username: string;
+    lastLogin: string;
+};
