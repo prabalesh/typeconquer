@@ -9,7 +9,7 @@ import { siderbarOpen } from "../features/sidebar/sidebarsSice";
 import { NotificationType } from "../types";
 import NotificationPanel from "../components/NotificationPanel";
 import { fetchNotifications } from "../api/fetchNotifications";
-import { Bell, BellRing } from "lucide-react";
+import { Bell, BellRing, MessageCircleCode } from "lucide-react";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -99,7 +99,7 @@ const Header: React.FC = () => {
                                     )}
                                 </div>
                                 <div onClick={() => dispatch(siderbarOpen())}>
-                                    <i className="fas fa-users text-xl sm:text-2xl"></i>
+                                    <MessageCircleCode />
                                 </div>
                                 <div
                                     className="relative cursor-pointer"
