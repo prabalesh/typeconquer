@@ -5,6 +5,7 @@ import Spinner from "../Spinner";
 import { toast } from "react-toastify";
 import { Friend } from "../../types";
 import FriendItem from "./FriendItem";
+import { RotateCw, UserCog, UserPlus } from "lucide-react";
 
 export interface PendingRequestType {
     _id: string;
@@ -84,10 +85,10 @@ function Friendbar() {
             <h2 className="text-xl font-semibold mb-4">Friends</h2>
             <div className="my-2 flex gap-4">
                 <div>
-                    <i
-                        className="fa-solid fa-user-plus"
+                    <UserPlus
+                        size={20}
                         onClick={() => setOpenFrndReqModal(true)}
-                    ></i>
+                    />
                     <FriendRequestModal
                         isOpen={openFrndReqModal}
                         onClose={() => {
@@ -97,8 +98,8 @@ function Friendbar() {
                     />
                 </div>
                 <div className="relative inline-block">
-                    <i
-                        className="fa-solid fa-user-clock"
+                    <UserCog
+                        size={20}
                         onClick={() => {
                             if (pendingRequests.length > 0) {
                                 setOpenPendingRequest(true);
@@ -106,7 +107,7 @@ function Friendbar() {
                                 toast.error("No pending requests!");
                             }
                         }}
-                    ></i>
+                    />
                     {pendingRequests.length > 0 && (
                         <div>
                             <div
@@ -130,13 +131,13 @@ function Friendbar() {
                     )}
                 </div>
                 <div>
-                    <i
-                        className="fa-solid fa-rotate-right"
+                    <RotateCw
+                        size={20}
                         onClick={() => {
                             fetchFriendList();
                             fetchPendingRequest();
                         }}
-                    ></i>
+                    />
                 </div>
             </div>
             {friendlistLoading ? (
