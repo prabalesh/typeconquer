@@ -4,6 +4,7 @@ import PendingRequestsModal from "./PendingRequestModal";
 import Spinner from "../Spinner";
 import formatRelativeTime from "../../utils/relativeTime";
 import { toast } from "react-toastify";
+import UserAvatar from "../User/UserAvatar";
 
 export interface PendingRequestType {
     _id: string;
@@ -167,11 +168,7 @@ function Friendbar() {
                                         >
                                             <div className="flex justify-between text-xs">
                                                 <div className="flex gap-2">
-                                                    <img
-                                                        src={`https://ui-avatars.com/api/?name=${friend.name}&background=random`}
-                                                        alt="Profile"
-                                                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                                                    />
+                                                    <UserAvatar username={friend.name} />
                                                     <div className="text-xs truncate">
                                                         <p>{friend.name}</p>
                                                         <p>
