@@ -108,7 +108,7 @@ const Header: React.FC = () => {
                                     <img
                                         src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
                                         alt="Profile"
-                                        className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover"
+                                        className="w-8 h-8 rounded-full object-cover"
                                     />
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ const Header: React.FC = () => {
                                         <img
                                             src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
                                             alt="Profile"
-                                            className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full object-cover"
+                                            className="w-8 rounded-full object-cover"
                                         />
                                         <div className="overflow-hidden">
                                             <p className="text-sm font-semibold truncate">
