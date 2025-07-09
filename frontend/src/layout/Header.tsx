@@ -9,6 +9,7 @@ import { siderbarOpen } from "../features/sidebar/sidebarsSice";
 import { NotificationType } from "../types";
 import NotificationPanel from "../components/NotificationPanel";
 import { fetchNotifications } from "../api/fetchNotifications";
+import { Bell, BellRing } from "lucide-react";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -83,7 +84,7 @@ const Header: React.FC = () => {
                                             )
                                         }
                                     >
-                                        <i className="fa-solid fa-bell"></i>
+                                        {unreadNotifications > 0 ? <BellRing /> : <Bell /> }
                                         {unreadNotifications > 0 && (
                                             <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                                                 {unreadNotifications}
