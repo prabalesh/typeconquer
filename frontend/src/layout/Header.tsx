@@ -10,6 +10,7 @@ import { NotificationType } from "../types";
 import NotificationPanel from "../components/NotificationPanel";
 import { fetchNotifications } from "../api/fetchNotifications";
 import { Bell, BellRing, MessageCircleCode } from "lucide-react";
+import UserAvatar from "../components/User/UserAvatar";
 
 const Header: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
@@ -105,11 +106,7 @@ const Header: React.FC = () => {
                                     className="relative cursor-pointer"
                                     onClick={() => setModalOpen(!isModalOpen)}
                                 >
-                                    <img
-                                        src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
-                                        alt="Profile"
-                                        className="w-8 h-8 rounded-full object-cover"
-                                    />
+                                    <UserAvatar username={user.username} />
                                 </div>
                             </div>
 
@@ -122,11 +119,7 @@ const Header: React.FC = () => {
                                     }}
                                 >
                                     <div className="flex gap-4 p-4 border-b items-center">
-                                        <img
-                                            src={`https://ui-avatars.com/api/?name=${user.name}&background=random`}
-                                            alt="Profile"
-                                            className="w-8 rounded-full object-cover"
-                                        />
+                                        <UserAvatar username={user.username} />
                                         <div className="overflow-hidden">
                                             <p className="text-sm font-semibold truncate">
                                                 {user.name}
